@@ -33,9 +33,17 @@ This project is configured for static export (`next.config.mjs` uses `output: "e
 - Build command: `npm run build`
 - Build output directory: `out`
 - Node version: `20+`
+- Deploy command: leave empty (for Git-connected Pages)
 
 ### Environment variable on Pages
 - `NEXT_PUBLIC_API_BASE_URL=https://<your-backend-domain>`
+
+If you deploy manually with Wrangler CLI, use:
+```bash
+npm run build
+npm run cf:deploy
+```
+Use `wrangler pages deploy ...`, not `wrangler deploy`.
 
 ## 3. Backend Hosting Requirement
 

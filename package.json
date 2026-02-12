@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cf:deploy": "wrangler pages deploy out --project-name vishra-social-os"
   },
   "dependencies": {
     "lucide-react": "^0.511.0",
