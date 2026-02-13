@@ -106,7 +106,7 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/api/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_url: analysis.image_url, caption }),
+        body: JSON.stringify({ image_url: analysis.image_url, caption, brand: analysis.brand }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail ?? "Publish failed.");
@@ -130,7 +130,7 @@ export default function HomePage() {
             AI-Powered Instagram Automation for Event Posters
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-cyan-100 md:text-base">
-            Upload once, generate high-converting captions with Claude, edit the draft, and publish directly using
+            Upload once, generate high-converting captions with Gemini, edit the draft, and publish directly using
             Meta Graph API.
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function HomePage() {
           className="inline-flex w-fit items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isAnalyzing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5" />}
-          {isAnalyzing ? "Analyzing with Claude..." : "Generate Caption"}
+          {isAnalyzing ? "Analyzing with Gemini..." : "Generate Caption"}
         </button>
 
         {analysis && (

@@ -3,17 +3,32 @@ import { NextResponse } from "next/server";
 type PublishPayload = {
   image_url?: string;
   caption?: string;
+  brand?: string;
 };
+
+function pickInstagramAccountId(brand: string | undefined): string | undefined {
+  const normalized = (brand ?? "").toLowerCase();
+  if (normalized.includes("dravidian")) return process.env.DRAVIDIAN_IG_ID;
+  if (normalized.includes("fire") || normalized.includes("ice")) return process.env.FIREANDICE_IG_ID;
+  if (normalized.includes("barley") || normalized.includes("hops")) return process.env.BARLEYHOPS_IG_ID;
+  if (normalized.includes("score")) return process.env.SCOREBAR_IG_ID;
+  if (normalized.includes("southern") || normalized.includes("spice")) return process.env.SOUTHERNSPICE_IG_ID;
+  return process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID;
+}
 
 export async function POST(request: Request) {
   try {
-    const { image_url, caption } = (await request.json()) as PublishPayload;
+    const { image_url, caption, brand } = (await request.json()) as PublishPayload;
     const accessToken = process.env.META_ACCESS_TOKEN;
-    const igAccountId = process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID;
+    const igAccountId = pickInstagramAccountId(brand);
 
     if (!accessToken || !igAccountId) {
       return NextResponse.json(
-        { detail: "Meta API credentials are missing. Set META_ACCESS_TOKEN and INSTAGRAM_BUSINESS_ACCOUNT_ID." },
+        {
+          detail:
+            "Meta API credentials are missing. Set META_ACCESS_TOKEN and brand IG IDs " +
+            "(DRAVIDIAN_IG_ID/FIREANDICE_IG_ID/BARLEYHOPS_IG_ID) or INSTAGRAM_BUSINESS_ACCOUNT_ID.",
+        },
         { status: 500 }
       );
     }
