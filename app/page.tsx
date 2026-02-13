@@ -15,7 +15,7 @@ type AnalysisResponse = {
 type PublishTarget = "post" | "story";
 
 type AppUser = {
-  email: string;
+  username: string;
   role: "agency_manager" | "bar_manager";
   brands: string[];
 };
@@ -46,7 +46,7 @@ export default function HomePage() {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isLoginLoading, setIsLoginLoading] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
+  const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   const hashtagsLine = useMemo(() => (analysis ? analysis.hashtags.join(" ") : ""), [analysis]);
@@ -78,7 +78,7 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+        body: JSON.stringify({ username: loginUsername, password: loginPassword }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail ?? "Login failed.");
@@ -218,11 +218,11 @@ export default function HomePage() {
           <ScaleXLogo compact />
           <p className="mb-1 mt-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">Internal Social OS</p>
           <h1 className="mb-4 text-2xl font-bold">Team Login</h1>
-          <label className="mb-2 block text-sm font-medium text-slate-300">Email</label>
+          <label className="mb-2 block text-sm font-medium text-slate-300">Username</label>
           <input
-            type="email"
-            value={loginEmail}
-            onChange={(e) => setLoginEmail(e.target.value)}
+            type="text"
+            value={loginUsername}
+            onChange={(e) => setLoginUsername(e.target.value)}
             className="mb-4 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:ring-2 focus:ring-cyan-400"
             required
           />
@@ -260,7 +260,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 rounded-lg bg-slate-950/40 px-3 py-2 text-xs font-semibold"
             >
               <LogOut className="h-4 w-4" />
-              {user.email} ({user.role})
+              {user.username} ({user.role})
             </button>
           </div>
 

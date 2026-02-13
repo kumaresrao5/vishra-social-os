@@ -2,18 +2,18 @@ import { NextResponse } from "next/server";
 import { authenticateUser, createSessionToken, SESSION_COOKIE } from "@/lib/auth";
 
 type LoginPayload = {
-  email?: string;
+  username?: string;
   password?: string;
 };
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = (await request.json()) as LoginPayload;
-    if (!email || !password) {
-      return NextResponse.json({ detail: "Email and password are required." }, { status: 400 });
+    const { username, password } = (await request.json()) as LoginPayload;
+    if (!username || !password) {
+      return NextResponse.json({ detail: "Username and password are required." }, { status: 400 });
     }
 
-    const user = authenticateUser(email, password);
+    const user = authenticateUser(username, password);
     if (!user) {
       return NextResponse.json({ detail: "Invalid credentials." }, { status: 401 });
     }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const token = await createSessionToken(user);
     const response = NextResponse.json({
       success: true,
-      user: { email: user.email, role: user.role, brands: user.brands },
+      user: { username: user.username, role: user.role, brands: user.brands },
     });
     response.cookies.set(SESSION_COOKIE, token, {
       httpOnly: true,

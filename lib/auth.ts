@@ -3,14 +3,14 @@ import { jwtVerify, SignJWT } from "jose";
 export type UserRole = "agency_manager" | "bar_manager";
 
 export type TeamUser = {
-  email: string;
+  username: string;
   password: string;
   role: UserRole;
   brands: string[];
 };
 
 export type SessionUser = {
-  email: string;
+  username: string;
   role: UserRole;
   brands: string[];
 };
@@ -18,7 +18,7 @@ export type SessionUser = {
 export const SESSION_COOKIE = "sx_session";
 
 type SessionPayload = {
-  email: string;
+  username: string;
   role: UserRole;
   brands: string[];
   exp: number;
@@ -43,9 +43,9 @@ export function getTeamUsers(): TeamUser[] {
     const parsed = JSON.parse(raw) as TeamUser[];
     if (!Array.isArray(parsed)) return [];
     return parsed
-      .filter((u) => u?.email && u?.password && u?.role)
+      .filter((u) => u?.username && u?.password && u?.role)
       .map((u) => ({
-        email: u.email.trim().toLowerCase(),
+        username: u.username.trim().toLowerCase(),
         password: u.password,
         role: u.role,
         brands: Array.isArray(u.brands) ? u.brands.map(normalizeBrand) : [],
@@ -55,16 +55,16 @@ export function getTeamUsers(): TeamUser[] {
   }
 }
 
-export function authenticateUser(email: string, password: string): SessionUser | null {
+export function authenticateUser(username: string, password: string): SessionUser | null {
   const users = getTeamUsers();
-  const found = users.find((u) => u.email === email.trim().toLowerCase() && u.password === password);
+  const found = users.find((u) => u.username === username.trim().toLowerCase() && u.password === password);
   if (!found) return null;
-  return { email: found.email, role: found.role, brands: found.brands };
+  return { username: found.username, role: found.role, brands: found.brands };
 }
 
 export async function createSessionToken(user: SessionUser): Promise<string> {
   return await new SignJWT({
-    email: user.email,
+    username: user.username,
     role: user.role,
     brands: user.brands,
   })
@@ -78,9 +78,9 @@ export async function verifySessionToken(token: string): Promise<SessionUser | n
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
     const casted = payload as unknown as SessionPayload;
-    if (!casted.email || !casted.role || !Array.isArray(casted.brands)) return null;
+    if (!casted.username || !casted.role || !Array.isArray(casted.brands)) return null;
     return {
-      email: String(casted.email),
+      username: String(casted.username),
       role: casted.role,
       brands: casted.brands.map((b) => String(b).toLowerCase()),
     };
