@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { ArrowRight, Menu } from "lucide-react";
 
 function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="text-sm font-medium text-slate-700 hover:text-slate-950 transition"
+      className="text-sm font-semibold text-slate-700 hover:text-slate-950 transition"
     >
       {label}
     </Link>
@@ -17,13 +18,21 @@ export default function MarketingShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-amber-50 text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-black/10 bg-white/70 backdrop-blur">
+    <div className="min-h-screen text-slate-900">
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(1000px_500px_at_10%_-10%,rgba(16,185,129,0.18),transparent_60%),radial-gradient(900px_520px_at_100%_10%,rgba(14,165,233,0.16),transparent_55%),linear-gradient(to_bottom,#fbfbf8,#f7f7f1_60%,#fbfbf8)]" />
+        <div className="absolute inset-0 opacity-[0.08] [background-image:radial-gradient(#0f172a_1px,transparent_1px)] [background-size:20px_20px]" />
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-black/10 bg-[rgba(251,251,248,0.72)] backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-slate-950 text-white shadow-sm">
+              <span className="text-sm font-black tracking-tight">F</span>
+            </div>
             <div className="leading-none">
-              <div className="text-lg font-black tracking-tight">FLEXT</div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-sky-700/80">Social OS</div>
+              <div className="text-base font-black tracking-tight">Flext</div>
+              <div className="text-[10px] uppercase tracking-[0.34em] text-emerald-700/80">Social OS</div>
             </div>
           </Link>
 
@@ -33,44 +42,56 @@ export default function MarketingShell({
             <NavLink href="/pricing" label="Pricing" />
             <a
               href="https://ai.scalex.my"
-              className="inline-flex items-center justify-center rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
+              className="inline-flex items-center justify-center rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 transition"
             >
-              Login
+              Open app <ArrowRight className="ml-2 h-4 w-4" />
             </a>
           </nav>
 
-          <a
-            href="https://ai.scalex.my"
-            className="md:hidden inline-flex items-center justify-center rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
-          >
-            Login
-          </a>
+          <details className="relative md:hidden">
+            <summary className="list-none inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold shadow-sm">
+              <Menu className="mr-2 h-4 w-4" /> Menu
+            </summary>
+            <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-lg">
+              <div className="p-3 space-y-2">
+                <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/features">Features</Link>
+                <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/security">Security</Link>
+                <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/pricing">Pricing</Link>
+                <a
+                  href="https://ai.scalex.my"
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
+                >
+                  Open app <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </details>
         </div>
       </header>
 
       <main>{children}</main>
 
-      <footer className="border-t border-black/10 bg-white/70">
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 md:grid-cols-3">
+      <footer className="border-t border-black/10 bg-[rgba(251,251,248,0.72)]">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-12 md:grid-cols-3">
           <div>
-            <div className="text-base font-bold">Flext</div>
-            <p className="mt-2 text-sm text-slate-600">
-              Internal-grade social automation that becomes enterprise-ready when you decide to sell.
+            <div className="text-base font-black tracking-tight">Flext</div>
+            <p className="mt-2 max-w-sm text-sm text-slate-600">
+              Social publishing control center for agencies and multi-outlet teams. Fast drafts, safer posting.
             </p>
           </div>
           <div className="text-sm">
-            <div className="font-semibold">Product</div>
-            <div className="mt-2 space-y-2 text-slate-700">
+            <div className="font-semibold text-slate-900">Product</div>
+            <div className="mt-3 space-y-2 text-slate-700">
               <Link href="/features" className="block hover:text-slate-950">Features</Link>
               <Link href="/security" className="block hover:text-slate-950">Security</Link>
               <Link href="/pricing" className="block hover:text-slate-950">Pricing</Link>
             </div>
           </div>
           <div className="text-sm">
-            <div className="font-semibold">Get Started</div>
-            <div className="mt-2 space-y-2 text-slate-700">
-              <a className="block hover:text-slate-950" href="https://ai.scalex.my">Open App</a>
+            <div className="font-semibold text-slate-900">Contact</div>
+            <div className="mt-3 space-y-2 text-slate-700">
               <a className="block hover:text-slate-950" href="mailto:hello@scalex.my">hello@scalex.my</a>
+              <a className="block hover:text-slate-950" href="https://ai.scalex.my">ai.scalex.my</a>
             </div>
           </div>
         </div>

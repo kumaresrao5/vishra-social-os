@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  --bg: #020617;
-  --bg-soft: #0b1220;
-  --surface: #0f172a;
-  --surface-2: #111b31;
-  --line: rgba(255, 255, 255, 0.1);
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --accent: #38bdf8;
+  color-scheme: light;
+  --bg: #fbfbf8;
+  --bg-soft: #f6f6f1;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --line: rgba(2, 6, 23, 0.08);
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #0ea5e9;
 }
 
 * {
@@ -23,13 +23,29 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background:
-    radial-gradient(1200px 500px at 100% -20%, rgba(56, 189, 248, 0.18), transparent 50%),
-    radial-gradient(900px 450px at 0% 120%, rgba(59, 130, 246, 0.14), transparent 50%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
 }
 
 body {
   font-family: var(--font-sans), "Segoe UI", sans-serif;
+}
+
+html.theme-app {
+  color-scheme: dark;
+  --bg: #020617;
+  --bg-soft: #0b1220;
+  --surface: #0f172a;
+  --surface-2: #111b31;
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+}
+
+html.theme-app body {
+  background:
+    radial-gradient(1200px 500px at 100% -20%, rgba(56, 189, 248, 0.18), transparent 50%),
+    radial-gradient(900px 450px at 0% 120%, rgba(59, 130, 246, 0.14), transparent 50%),
+    var(--bg);
 }
