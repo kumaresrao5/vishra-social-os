@@ -1,7 +1,7 @@
 "use client";
 
-import { ChangeEvent, DragEvent, useMemo, useState } from "react";
-import { ImagePlus, Loader2, Rocket, Sparkles } from "lucide-react";
+import { ChangeEvent, DragEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { ImagePlus, Loader2, LogOut, Rocket, Sparkles } from "lucide-react";
 
 type AnalysisResponse = {
   brand: string;
@@ -11,7 +11,14 @@ type AnalysisResponse = {
   image_url: string;
   filename: string;
 };
+
 type PublishTarget = "post" | "story";
+
+type AppUser = {
+  email: string;
+  role: "agency_manager" | "bar_manager";
+  brands: string[];
+};
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
@@ -27,11 +34,64 @@ export default function HomePage() {
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
   const hashtagsLine = useMemo(() => (analysis ? analysis.hashtags.join(" ") : ""), [analysis]);
+
+  useEffect(() => {
+    const bootstrap = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/me`);
+        if (!response.ok) return;
+        const data = await response.json();
+        setUser(data.user ?? null);
+      } finally {
+        setIsAuthLoading(false);
+      }
+    };
+    void bootstrap();
+  }, []);
 
   function resetFeedback() {
     setError("");
     setMessage("");
+  }
+
+  async function onLoginSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    resetFeedback();
+    setIsLoginLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail ?? "Login failed.");
+      setUser(data.user ?? null);
+      setLoginPassword("");
+      setMessage("Logged in successfully.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error during login.");
+    } finally {
+      setIsLoginLoading(false);
+    }
+  }
+
+  async function logout() {
+    await fetch(`${API_BASE_URL}/api/auth/logout`, { method: "POST" });
+    setUser(null);
+    setAnalysis(null);
+    setSelectedFile(null);
+    setPreviewUrl("");
+    setCaption("");
+    setMessage("");
+    setError("");
   }
 
   function applyFile(file: File) {
@@ -129,17 +189,75 @@ export default function HomePage() {
     }
   }
 
+  if (isAuthLoading) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-950 text-slate-100">
+        <p className="inline-flex items-center gap-2 text-slate-300">
+          <Loader2 className="h-5 w-5 animate-spin" /> Loading...
+        </p>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-950 px-6 text-slate-100">
+        <form
+          onSubmit={onLoginSubmit}
+          className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6"
+        >
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">Scale X Social OS</p>
+          <h1 className="mb-4 text-2xl font-bold">Team Login</h1>
+          <label className="mb-2 block text-sm font-medium text-slate-300">Email</label>
+          <input
+            type="email"
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)}
+            className="mb-4 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:ring-2 focus:ring-cyan-400"
+            required
+          />
+          <label className="mb-2 block text-sm font-medium text-slate-300">Password</label>
+          <input
+            type="password"
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
+            className="mb-5 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:ring-2 focus:ring-cyan-400"
+            required
+          />
+          <button
+            type="submit"
+            disabled={isLoginLoading}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 disabled:opacity-60"
+          >
+            {isLoginLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {isLoginLoading ? "Signing in..." : "Sign In"}
+          </button>
+          {error && <p className="mt-3 text-sm text-rose-300">{error}</p>}
+        </form>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <section className="relative overflow-hidden border-b border-slate-800 bg-gradient-to-r from-cyan-600 via-sky-700 to-indigo-900 px-6 py-14">
         <div className="mx-auto max-w-5xl">
-          <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="h-4 w-4" />
-            Vishra Social OS
-          </p>
-          <h1 className="text-3xl font-bold leading-tight md:text-5xl">
-            AI-Powered Instagram Automation for Event Posters
-          </h1>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="h-4 w-4" />
+              Scale X Social OS
+            </p>
+            <button
+              type="button"
+              onClick={logout}
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-950/40 px-3 py-2 text-xs font-semibold"
+            >
+              <LogOut className="h-4 w-4" />
+              {user.email} ({user.role})
+            </button>
+          </div>
+
+          <h1 className="text-3xl font-bold leading-tight md:text-5xl">AI-Powered Instagram Automation</h1>
           <p className="mt-3 max-w-2xl text-sm text-cyan-100 md:text-base">
             Upload once, generate high-converting captions with Groq, edit the draft, and publish directly using
             Meta Graph API.
@@ -205,9 +323,7 @@ export default function HomePage() {
                 type="button"
                 onClick={() => setPublishTarget("post")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                  publishTarget === "post"
-                    ? "bg-cyan-500 text-slate-950"
-                    : "text-slate-300 hover:bg-slate-800"
+                  publishTarget === "post" ? "bg-cyan-500 text-slate-950" : "text-slate-300 hover:bg-slate-800"
                 }`}
               >
                 Post
@@ -216,9 +332,7 @@ export default function HomePage() {
                 type="button"
                 onClick={() => setPublishTarget("story")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
-                  publishTarget === "story"
-                    ? "bg-cyan-500 text-slate-950"
-                    : "text-slate-300 hover:bg-slate-800"
+                  publishTarget === "story" ? "bg-cyan-500 text-slate-950" : "text-slate-300 hover:bg-slate-800"
                 }`}
               >
                 Story
@@ -239,8 +353,14 @@ export default function HomePage() {
           </article>
         )}
 
-        {message && <p className="rounded-lg border border-emerald-700 bg-emerald-900/30 p-3 text-sm text-emerald-300">{message}</p>}
-        {error && <p className="rounded-lg border border-rose-700 bg-rose-900/30 p-3 text-sm text-rose-300">{error}</p>}
+        {message && (
+          <p className="rounded-lg border border-emerald-700 bg-emerald-900/30 p-3 text-sm text-emerald-300">
+            {message}
+          </p>
+        )}
+        {error && (
+          <p className="rounded-lg border border-rose-700 bg-rose-900/30 p-3 text-sm text-rose-300">{error}</p>
+        )}
       </section>
     </main>
   );

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { canPublishBrand, SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
 
 type PublishPayload = {
   image_url?: string;
@@ -81,6 +83,11 @@ function pickInstagramAccountId(brand: string | undefined): string | undefined {
 export async function POST(request: Request) {
   try {
     const { image_url, caption, brand, target } = (await request.json()) as PublishPayload;
+    const token = cookies().get(SESSION_COOKIE)?.value;
+    const session = token ? await verifySessionToken(token) : null;
+    if (!session) {
+      return NextResponse.json({ detail: "Unauthorized" }, { status: 401 });
+    }
     const publishTarget = target === "story" ? "story" : "post";
     const accessToken = process.env.META_ACCESS_TOKEN;
     const igAccountId = pickInstagramAccountId(brand);
@@ -100,6 +107,15 @@ export async function POST(request: Request) {
     }
     if (!caption?.trim()) {
       return NextResponse.json({ detail: "Caption cannot be empty." }, { status: 400 });
+    }
+    if (!brand?.trim()) {
+      return NextResponse.json({ detail: "brand is required." }, { status: 400 });
+    }
+    if (!canPublishBrand(session, brand)) {
+      return NextResponse.json(
+        { detail: `You are not allowed to publish for brand: ${brand}` },
+        { status: 403 }
+      );
     }
 
     const graphBase = "https://graph.facebook.com/v21.0";

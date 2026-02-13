@@ -23,8 +23,15 @@ Open `http://localhost:3000`.
 - `GROQ_MODEL` (default: `meta-llama/llama-4-scout-17b-16e-instruct`)
 - `META_ACCESS_TOKEN`
 - `INSTAGRAM_BUSINESS_ACCOUNT_ID`
+- `DRAVIDIAN_IG_ID`
+- `FIREANDICE_IG_ID`
+- `BARLEYHOPS_IG_ID`
+- `SCOREBAR_IG_ID`
+- `SOUTHERNSPICE_IG_ID`
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_UPLOAD_PRESET` (unsigned preset)
+- `AUTH_SECRET` (long random string)
+- `TEAM_USERS` (JSON array of users and allowed brands)
 
 Optional:
 - `NEXT_PUBLIC_API_BASE_URL` (leave empty to use same-origin `/api/*` routes)
@@ -39,6 +46,10 @@ Optional:
 
 ## API Routes
 
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+
 - `POST /api/analyze`
   - Accepts JPG/PNG poster upload
   - Uses Groq vision model to detect brand and generate caption/hashtags
@@ -46,6 +57,10 @@ Optional:
 
 - `POST /api/publish`
   - Publishes to Instagram via Meta `media` + `media_publish` endpoints
+  - Supports `target`: `post` or `story`
+  - Enforces role rules:
+    - `agency_manager` can publish all brands
+    - `bar_manager` can only publish brands listed in `TEAM_USERS[].brands`
 
 ## Notes
 

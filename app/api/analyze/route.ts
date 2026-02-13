@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
 
 const SYSTEM_PROMPT = `You are the AI Social Media Manager for Vishra Holdings. You manage 3 brands:
 1. Dravidian (Nightlife, Indian, Upscale)
@@ -53,6 +55,12 @@ async function uploadToCloudinary(file: File): Promise<string> {
 
 export async function POST(request: Request) {
   try {
+    const token = cookies().get(SESSION_COOKIE)?.value;
+    const session = token ? await verifySessionToken(token) : null;
+    if (!session) {
+      return NextResponse.json({ detail: "Unauthorized" }, { status: 401 });
+    }
+
     const groqApiKey = process.env.GROQ_API_KEY;
     if (!groqApiKey) {
       return NextResponse.json({ detail: "GROQ_API_KEY is not configured." }, { status: 500 });
