@@ -55,11 +55,42 @@ export async function POST(request: Request) {
       return NextResponse.json({ detail: msg }, { status: 502 });
     }
 
+    const creationId = createJson.id;
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const statusResp = await fetch(
+        `${graphBase}/${creationId}?fields=status_code,status&access_token=${encodeURIComponent(accessToken)}`
+      );
+      const statusJson = (await statusResp.json()) as {
+        status_code?: string;
+        status?: string;
+        error?: { message?: string };
+      };
+
+      if (!statusResp.ok) {
+        const msg = statusJson.error?.message ?? "Failed checking media container status.";
+        return NextResponse.json({ detail: msg }, { status: 502 });
+      }
+
+      const statusCode = (statusJson.status_code ?? statusJson.status ?? "").toUpperCase();
+      if (statusCode === "FINISHED" || statusCode === "PUBLISHED") {
+        break;
+      }
+      if (statusCode === "ERROR" || statusCode === "EXPIRED") {
+        return NextResponse.json(
+          { detail: `Media container is not publishable. Current status: ${statusCode}` },
+          { status: 502 }
+        );
+      }
+
+      await wait(2000);
+    }
+
     const publishResp = await fetch(`${graphBase}/${igAccountId}/media_publish`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        creation_id: createJson.id,
+        creation_id: creationId,
         access_token: accessToken,
       }),
     });
@@ -71,7 +102,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      media_id: createJson.id,
+      media_id: creationId,
       instagram_post_id: publishJson.id,
       detail: "Post published successfully to Instagram.",
     });
