@@ -12,7 +12,7 @@ type AnalysisResponse = {
   filename: string;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
 export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -69,7 +69,7 @@ export default function HomePage() {
       const form = new FormData();
       form.append("file", selectedFile);
 
-      const response = await fetch(`${API_BASE_URL}/analyze`, {
+      const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: "POST",
         body: form,
       });
@@ -103,7 +103,7 @@ export default function HomePage() {
     resetFeedback();
     setIsPublishing(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/publish`, {
+      const response = await fetch(`${API_BASE_URL}/api/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image_url: analysis.image_url, caption }),
