@@ -32,21 +32,21 @@ body {
 }
 
 html.theme-app {
-  color-scheme: dark;
-  --bg: #020617;
-  --bg-soft: #0b1220;
-  --surface: #0f172a;
-  --surface-2: #111b31;
-  --line: rgba(255, 255, 255, 0.1);
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --accent: #38bdf8;
+  color-scheme: light;
+  --bg: #f7f8f4;
+  --bg-soft: #f2f3ee;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --line: rgba(2, 6, 23, 0.08);
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #0ea5e9;
 }
 
 html.theme-app body {
   background:
-    radial-gradient(1200px 500px at 100% -20%, rgba(56, 189, 248, 0.18), transparent 50%),
-    radial-gradient(900px 450px at 0% 120%, rgba(59, 130, 246, 0.14), transparent 50%),
+    radial-gradient(1200px 520px at 100% -20%, rgba(16, 185, 129, 0.12), transparent 52%),
+    radial-gradient(900px 480px at 0% 120%, rgba(14, 165, 233, 0.12), transparent 52%),
     var(--bg);
 }
 

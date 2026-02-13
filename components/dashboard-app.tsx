@@ -84,17 +84,17 @@ function humanDate(value?: string): string {
 function FlextLogo() {
   return (
     <div className="leading-none">
-      <p className="text-xl font-black tracking-tight text-white">FLEXT</p>
-      <p className="text-[10px] uppercase tracking-[0.28em] text-sky-300/85">Social OS</p>
+      <p className="text-xl font-black tracking-tight text-slate-950">FLEXT</p>
+      <p className="text-[10px] uppercase tracking-[0.28em] text-emerald-700/80">Social OS</p>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: PublishRecord["status"] }) {
   const map = {
-    queued: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-    published: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-    failed: "bg-rose-500/15 text-rose-300 border-rose-400/30",
+    queued: "bg-amber-50 text-amber-800 border-amber-300/60",
+    published: "bg-emerald-50 text-emerald-800 border-emerald-300/60",
+    failed: "bg-rose-50 text-rose-800 border-rose-300/60",
   };
   return (
     <span className={cn("rounded-full border px-2.5 py-1 text-xs font-semibold uppercase", map[status])}>{status}</span>
@@ -104,7 +104,7 @@ function StatusBadge({ status }: { status: PublishRecord["status"] }) {
 function PublishTargetSwitch({ value, onChange }: { value: PublishTarget; onChange: (next: PublishTarget) => void }) {
   const options: PublishTarget[] = ["post", "story", "both"];
   return (
-    <div className="inline-flex rounded-lg border border-white/15 bg-slate-950/40 p-1">
+    <div className="inline-flex rounded-lg border border-black/10 bg-white p-1 shadow-sm">
       {options.map((option) => (
         <button
           key={option}
@@ -112,7 +112,7 @@ function PublishTargetSwitch({ value, onChange }: { value: PublishTarget; onChan
           onClick={() => onChange(option)}
           className={cn(
             "rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition",
-            value === option ? "bg-sky-400 text-slate-950" : "text-slate-300 hover:bg-white/5"
+            value === option ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"
           )}
         >
           {option}
@@ -512,8 +512,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
   if (isAuthLoading) {
     return (
-      <main className="grid min-h-screen place-items-center bg-slate-950 text-slate-100">
-        <p className="inline-flex items-center gap-2 text-slate-300">
+      <main className="grid min-h-screen place-items-center text-slate-900">
+        <p className="inline-flex items-center gap-2 text-slate-600">
           <Loader2 className="h-5 w-5 animate-spin" /> Loading application...
         </p>
       </main>
@@ -522,49 +522,49 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
   if (!user) {
     return (
-      <main className="grid min-h-screen place-items-center bg-slate-950 px-6 text-slate-100">
-        <form onSubmit={onLoginSubmit} className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-6 backdrop-blur">
+      <main className="grid min-h-screen place-items-center px-6 text-slate-900">
+        <form onSubmit={onLoginSubmit} className="w-full max-w-md rounded-3xl border border-black/10 bg-white/80 p-6 shadow-sm backdrop-blur">
           <FlextLogo />
-          <p className="mt-2 text-xs uppercase tracking-[0.2em] text-sky-300">Internal access</p>
-          <h1 className="mt-3 text-2xl font-bold">Team Login</h1>
-          <p className="mb-5 mt-1 text-sm text-slate-400">Use your username credentials to manage outlet publishing.</p>
+          <p className="mt-2 text-xs uppercase tracking-[0.2em] text-emerald-700">Internal access</p>
+          <h1 className="mt-3 text-2xl font-black tracking-tight">Team Login</h1>
+          <p className="mb-5 mt-1 text-sm text-slate-600">Use your username credentials to manage outlet publishing.</p>
 
-          <label className="mb-1 block text-sm font-medium text-slate-300">Username</label>
+          <label className="mb-1 block text-sm font-semibold text-slate-700">Username</label>
           <input
             type="text"
             value={loginUsername}
             onChange={(e) => setLoginUsername(e.target.value)}
-            className="mb-4 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 outline-none ring-sky-400 transition focus:ring-2"
+            className="mb-4 w-full rounded-xl border border-black/10 bg-white px-3 py-2 outline-none ring-sky-300 transition focus:ring-2"
             required
           />
-          <label className="mb-1 block text-sm font-medium text-slate-300">Password</label>
+          <label className="mb-1 block text-sm font-semibold text-slate-700">Password</label>
           <input
             type="password"
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 outline-none ring-sky-400 transition focus:ring-2"
+            className="mb-5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 outline-none ring-sky-300 transition focus:ring-2"
             required
           />
           <button
             type="submit"
             disabled={isLoginLoading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-400 px-4 py-2 font-semibold text-slate-950 disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-slate-900 disabled:opacity-60"
           >
             {isLoginLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {isLoginLoading ? "Signing in..." : "Sign in"}
           </button>
-          {inlineError ? <p className="mt-4 text-sm text-rose-300">{inlineError}</p> : null}
+          {inlineError ? <p className="mt-4 text-sm text-rose-700">{inlineError}</p> : null}
         </form>
       </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-white/10 bg-slate-900/80 p-5 lg:flex lg:flex-col">
+        <aside className="hidden w-64 shrink-0 border-r border-black/10 bg-white/75 p-5 lg:flex lg:flex-col backdrop-blur">
           <FlextLogo />
-          <p className="mt-3 text-xs text-slate-400">AI publishing command center</p>
+          <p className="mt-3 text-xs text-slate-600">AI publishing command center</p>
 
           <nav className="mt-8 space-y-1">
             {sideNavItems.map((item) => {
@@ -577,7 +577,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   onClick={() => setSection(item.id)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-                    active ? "bg-sky-500/15 text-sky-200" : "text-slate-300 hover:bg-white/5"
+                    active ? "bg-sky-500/10 text-sky-900" : "text-slate-700 hover:bg-slate-50"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -590,32 +590,32 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           <button
             type="button"
             onClick={logout}
-            className="mt-auto inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
+            className="mt-auto inline-flex items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </aside>
 
         <main className="flex-1 pb-20 lg:pb-6">
-          <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 px-4 py-3 backdrop-blur lg:px-8">
+          <header className="sticky top-0 z-30 border-b border-black/10 bg-white/75 px-4 py-3 backdrop-blur lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h1 className="text-lg font-semibold">Flext Social OS</h1>
-                <p className="text-xs text-slate-400">{user.username} • {user.role.replace("_", " ")}</p>
+                <h1 className="text-lg font-black tracking-tight">Flext Social OS</h1>
+                <p className="text-xs text-slate-600">{user.username} • {user.role.replace("_", " ")}</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <select
                   value={chosenBrand || allowedBrands[0] || ""}
                   onChange={(e) => setChosenBrand(e.target.value)}
-                  className="rounded-md border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-200"
+                  className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm"
                 >
                   {allowedBrands.map((brand) => (
                     <option key={brand} value={brand}>{brand}</option>
                   ))}
                 </select>
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-slate-900">
-                  <Bell className="h-4 w-4 text-slate-300" />
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-black/10 bg-white shadow-sm">
+                  <Bell className="h-4 w-4 text-slate-600" />
                 </span>
               </div>
             </div>
@@ -623,23 +623,23 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
           <div className="mx-auto w-full max-w-7xl px-4 py-6 lg:px-8">
             {inlineError ? (
-              <div className="mb-5 rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">{inlineError}</div>
+              <div className="mb-5 rounded-2xl border border-rose-300/60 bg-rose-50 px-3 py-2 text-sm text-rose-800 shadow-sm">{inlineError}</div>
             ) : null}
 
             {section === "create" ? (
               <div className="space-y-5">
-                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                    <div className={cn("rounded-xl border px-3 py-2", uploadStepDone ? "border-emerald-400/40 bg-emerald-500/10" : "border-white/10 bg-slate-950/50")}>
-                      <p className="text-xs uppercase text-slate-400">Step 1</p>
+                    <div className={cn("rounded-2xl border px-3 py-2", uploadStepDone ? "border-emerald-300/70 bg-emerald-50" : "border-black/10 bg-white")}>
+                      <p className="text-xs uppercase text-slate-500">Step 1</p>
                       <p className="text-sm font-semibold">Upload Poster</p>
                     </div>
-                    <div className={cn("rounded-xl border px-3 py-2", draftStepDone ? "border-emerald-400/40 bg-emerald-500/10" : "border-white/10 bg-slate-950/50")}>
-                      <p className="text-xs uppercase text-slate-400">Step 2</p>
+                    <div className={cn("rounded-2xl border px-3 py-2", draftStepDone ? "border-emerald-300/70 bg-emerald-50" : "border-black/10 bg-white")}>
+                      <p className="text-xs uppercase text-slate-500">Step 2</p>
                       <p className="text-sm font-semibold">Review AI Draft</p>
                     </div>
-                    <div className="rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2">
-                      <p className="text-xs uppercase text-slate-400">Step 3</p>
+                    <div className="rounded-2xl border border-black/10 bg-white px-3 py-2">
+                      <p className="text-xs uppercase text-slate-500">Step 3</p>
                       <p className="text-sm font-semibold">Publish or Queue</p>
                     </div>
                   </div>
@@ -654,63 +654,63 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   onDrop={onDrop}
                   className={cn(
                     "block cursor-pointer rounded-2xl border-2 border-dashed p-10 text-center transition",
-                    isDragging ? "border-sky-300 bg-sky-500/10" : "border-white/15 bg-slate-900/70"
+                    isDragging ? "border-sky-500 bg-sky-50" : "border-slate-300 bg-white/70"
                   )}
                 >
                   <input type="file" accept="image/png,image/jpeg" onChange={onFileChange} className="hidden" />
                   <div className="mx-auto flex max-w-lg flex-col items-center gap-3">
-                    <Upload className="h-10 w-10 text-sky-300" />
-                    <p className="text-lg font-semibold">Drop poster or click to browse</p>
-                    <p className="text-sm text-slate-400">JPG/PNG up to your platform limit</p>
+                    <Upload className="h-10 w-10 text-sky-600" />
+                    <p className="text-lg font-semibold text-slate-900">Drop poster or click to browse</p>
+                    <p className="text-sm text-slate-600">JPG/PNG up to your platform limit</p>
                   </div>
                 </label>
 
                 <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.15fr_1fr]">
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                  <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                     {previewUrl ? (
-                      <img src={previewUrl} alt="Preview" className="mx-auto max-h-[520px] rounded-xl object-contain" />
+                      <img src={previewUrl} alt="Preview" className="mx-auto max-h-[520px] rounded-2xl object-contain" />
                     ) : (
-                      <div className="grid min-h-80 place-items-center rounded-xl border border-white/10 bg-slate-950/50 text-slate-500">
+                      <div className="grid min-h-80 place-items-center rounded-2xl border border-black/10 bg-slate-50 text-slate-500">
                         Poster preview
                       </div>
                     )}
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                  <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                     <div className="flex items-center justify-between gap-2">
                       <h2 className="text-base font-semibold">Draft Editor</h2>
-                      {analysis?.brand ? <span className="rounded-full border border-sky-300/30 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold">{analysis.brand}</span> : null}
+                      {analysis?.brand ? <span className="rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-900">{analysis.brand}</span> : null}
                     </div>
 
                     <button
                       type="button"
                       onClick={analyzePoster}
                       disabled={!selectedFile || isAnalyzing}
-                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-400 px-4 py-2.5 font-semibold text-slate-950 disabled:opacity-60"
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-slate-900 disabled:opacity-60"
                     >
                       {isAnalyzing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                       {isAnalyzing ? "Generating..." : "Generate Caption"}
                     </button>
 
-                    <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-400">Outlet</label>
+                    <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">Outlet</label>
                     <select
                       value={chosenBrand}
                       onChange={(e) => setChosenBrand(e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm shadow-sm"
                     >
                       {allowedBrands.map((brand) => (
                         <option key={brand} value={brand}>{brand}</option>
                       ))}
                     </select>
 
-                    <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-400">Caption</label>
+                    <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">Caption</label>
                     <textarea
                       value={caption}
                       onChange={(e) => setCaption(e.target.value)}
                       placeholder="AI draft appears here..."
-                      className="mt-1 min-h-52 w-full rounded-lg border border-white/10 bg-slate-950 p-3 text-sm outline-none ring-sky-400 focus:ring-2"
+                      className="mt-1 min-h-52 w-full rounded-xl border border-black/10 bg-white p-3 text-sm outline-none ring-sky-300 focus:ring-2"
                     />
-                    <p className="mt-2 text-xs text-slate-400">{hashtagsLine}</p>
+                    <p className="mt-2 text-xs text-slate-600">{hashtagsLine}</p>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3">
                       <PublishTargetSwitch value={publishTarget} onChange={setPublishTarget} />
@@ -718,7 +718,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="datetime-local"
                         value={scheduledFor}
                         onChange={(e) => setScheduledFor(e.target.value)}
-                        className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm"
+                        className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm shadow-sm"
                       />
                     </div>
 
@@ -727,7 +727,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={publishNow}
                         disabled={isPublishing || !analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 font-semibold text-slate-950 disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60"
                       >
                         {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
                         Publish Now
@@ -736,7 +736,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={addToQueue}
                         disabled={!analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-slate-950 px-4 py-2.5 font-semibold text-slate-200 disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 font-semibold text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60"
                       >
                         <Clock3 className="h-4 w-4" /> Add to Queue
                       </button>
@@ -747,27 +747,27 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "queue" ? (
-              <section className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Publishing Queue</h2>
-                  <button type="button" onClick={() => void loadRecords()} className="text-sm text-sky-300 hover:text-sky-200">Refresh</button>
+                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
                 </div>
                 {isRecordsLoading ? (
                   <div className="space-y-2">
-                    <div className="h-12 animate-pulse rounded-lg bg-slate-800" />
-                    <div className="h-12 animate-pulse rounded-lg bg-slate-800" />
+                    <div className="h-12 animate-pulse rounded-2xl bg-slate-100" />
+                    <div className="h-12 animate-pulse rounded-2xl bg-slate-100" />
                   </div>
                 ) : queueRecords.length === 0 ? (
-                  <p className="text-sm text-slate-400">No queued posts.</p>
+                  <p className="text-sm text-slate-600">No queued posts.</p>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-sm">
-                      <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
+                      <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                         <tr>
                           <th className="pb-2">Outlet</th><th className="pb-2">Target</th><th className="pb-2">Scheduled</th><th className="pb-2">Created By</th><th className="pb-2">Status</th><th className="pb-2">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/10">
+                      <tbody className="divide-y divide-black/10">
                         {queueRecords.map((record) => (
                           <tr key={record.id}>
                             <td className="py-3">{record.brand}</td>
@@ -776,7 +776,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                             <td className="py-3">{record.created_by}</td>
                             <td className="py-3"><StatusBadge status={record.status} /></td>
                             <td className="py-3">
-                              <button type="button" onClick={() => void publishQueuedRecord(record.id)} className="rounded-md bg-sky-400 px-3 py-1.5 text-xs font-semibold text-slate-950">Publish</button>
+                              <button type="button" onClick={() => void publishQueuedRecord(record.id)} className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-slate-900">Publish</button>
                             </td>
                           </tr>
                         ))}
@@ -788,39 +788,39 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "history" ? (
-              <section className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Publish History</h2>
-                  <button type="button" onClick={() => void loadRecords()} className="text-sm text-sky-300 hover:text-sky-200">Refresh</button>
+                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
                 </div>
                 {isRecordsLoading ? (
                   <div className="space-y-2">
-                    <div className="h-12 animate-pulse rounded-lg bg-slate-800" />
-                    <div className="h-12 animate-pulse rounded-lg bg-slate-800" />
+                    <div className="h-12 animate-pulse rounded-2xl bg-slate-100" />
+                    <div className="h-12 animate-pulse rounded-2xl bg-slate-100" />
                   </div>
                 ) : historyRecords.length === 0 ? (
-                  <p className="text-sm text-slate-400">No history yet.</p>
+                  <p className="text-sm text-slate-600">No history yet.</p>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-sm">
-                      <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
+                      <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                         <tr>
                           <th className="pb-2">Outlet</th><th className="pb-2">Published At</th><th className="pb-2">Status</th><th className="pb-2">IDs</th><th className="pb-2">Error</th><th className="pb-2">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/10">
+                      <tbody className="divide-y divide-black/10">
                         {historyRecords.map((record) => (
                           <tr key={record.id}>
                             <td className="py-3">{record.brand}</td>
                             <td className="py-3">{humanDate(record.published_at || record.created_at)}</td>
                             <td className="py-3"><StatusBadge status={record.status} /></td>
-                            <td className="py-3 text-xs text-slate-400">P:{record.post_id || "-"} / S:{record.story_id || "-"}</td>
-                            <td className="py-3 text-xs text-rose-300">{record.error || "-"}</td>
+                            <td className="py-3 text-xs text-slate-600">P:{record.post_id || "-"} / S:{record.story_id || "-"}</td>
+                            <td className="py-3 text-xs text-rose-700">{record.error || "-"}</td>
                             <td className="py-3">
                               {record.status === "failed" ? (
-                                <button type="button" onClick={() => void retryHistory(record)} className="rounded-md border border-white/20 px-3 py-1.5 text-xs">Retry</button>
+                                <button type="button" onClick={() => void retryHistory(record)} className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold shadow-sm hover:bg-slate-50">Retry</button>
                               ) : (
-                                <CheckCircle2 className="h-4 w-4 text-emerald-300" />
+                                <CheckCircle2 className="h-4 w-4 text-emerald-700" />
                               )}
                             </td>
                           </tr>
@@ -833,16 +833,16 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "assets" ? (
-              <section className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                 <h2 className="mb-3 text-lg font-semibold">Assets Library</h2>
                 {recentAssets.length === 0 ? (
-                  <p className="text-sm text-slate-400">No assets yet. Upload and publish to build your internal library.</p>
+                  <p className="text-sm text-slate-600">No assets yet. Upload and publish to build your internal library.</p>
                 ) : (
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     {recentAssets.map((asset) => (
-                      <div key={asset.id} className="overflow-hidden rounded-lg border border-white/10 bg-slate-950/50">
+                      <div key={asset.id} className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
                         <img src={asset.image_url} alt={asset.brand} className="h-40 w-full object-cover" />
-                        <div className="p-2 text-xs text-slate-300">
+                        <div className="p-2 text-xs text-slate-700">
                           <p className="truncate font-semibold">{asset.brand}</p>
                           <p className="text-slate-500">{humanDate(asset.created_at)}</p>
                         </div>
@@ -859,26 +859,26 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   Only agency managers can access user administration.
                 </section>
               ) : (
-                <section className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                   <div className="mb-3 flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Admin Users</h2>
-                    <button type="button" onClick={() => void loadUsers()} className="text-sm text-sky-300 hover:text-sky-200">Refresh</button>
+                    <button type="button" onClick={() => void loadUsers()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-2 rounded-xl border border-white/10 bg-slate-950/40 p-3 md:grid-cols-2">
-                    <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" className="rounded-md border border-white/10 bg-slate-950 px-3 py-2 text-sm" />
-                    <input value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" className="rounded-md border border-white/10 bg-slate-950 px-3 py-2 text-sm" />
-                    <select value={newRole} onChange={(e) => setNewRole(e.target.value as "agency_manager" | "bar_manager")} className="rounded-md border border-white/10 bg-slate-950 px-3 py-2 text-sm">
+                  <div className="grid grid-cols-1 gap-2 rounded-2xl border border-black/10 bg-white p-3 shadow-sm md:grid-cols-2">
+                    <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <input value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <select value={newRole} onChange={(e) => setNewRole(e.target.value as "agency_manager" | "bar_manager")} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm">
                       <option value="agency_manager">Agency manager</option>
                       <option value="bar_manager">Bar manager</option>
                     </select>
-                    <input value={newBrands} onChange={(e) => setNewBrands(e.target.value)} placeholder="Brands (comma separated)" className="rounded-md border border-white/10 bg-slate-950 px-3 py-2 text-sm" />
-                    <button type="button" onClick={createUser} className="rounded-md bg-sky-400 px-3 py-2 text-sm font-semibold text-slate-950">Save User</button>
+                    <input value={newBrands} onChange={(e) => setNewBrands(e.target.value)} placeholder="Brands (comma separated)" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <button type="button" onClick={createUser} className="rounded-xl bg-slate-950 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900">Save User</button>
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
-                    <p className="text-sm text-slate-400">Filter users</p>
-                    <select value={userFilterRole} onChange={(e) => setUserFilterRole(e.target.value as "all" | "agency_manager" | "bar_manager")} className="rounded-md border border-white/10 bg-slate-950 px-3 py-1.5 text-sm">
+                    <p className="text-sm text-slate-600">Filter users</p>
+                    <select value={userFilterRole} onChange={(e) => setUserFilterRole(e.target.value as "all" | "agency_manager" | "bar_manager")} className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm shadow-sm">
                       <option value="all">All</option>
                       <option value="agency_manager">Agency manager</option>
                       <option value="bar_manager">Bar manager</option>
@@ -886,11 +886,11 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   </div>
 
                   {isUsersLoading ? (
-                    <div className="mt-3 h-12 animate-pulse rounded-lg bg-slate-800" />
+                    <div className="mt-3 h-12 animate-pulse rounded-2xl bg-slate-100" />
                   ) : (
-                    <div className="mt-3 overflow-hidden rounded-xl border border-white/10">
+                    <div className="mt-3 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
                       <table className="w-full text-sm">
-                        <thead className="bg-slate-950/60 text-left text-xs uppercase tracking-wide text-slate-400">
+                        <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                           <tr>
                             <th className="px-3 py-2">Username</th>
                             <th className="px-3 py-2">Role</th>
@@ -898,7 +898,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                             <th className="px-3 py-2">Action</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-black/10">
                           {filteredUsers.map((managedUser) => (
                             <tr key={managedUser.username}>
                               <td className="px-3 py-2">{managedUser.username}</td>
@@ -906,7 +906,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                               <td className="px-3 py-2">{managedUser.brands.join(", ")}</td>
                               <td className="px-3 py-2">
                                 {managedUser.username !== user.username ? (
-                                  <button type="button" onClick={() => void deleteManagedUser(managedUser.username)} className="inline-flex items-center gap-1 rounded-md border border-rose-300/30 px-2 py-1 text-xs text-rose-200"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
+                                  <button type="button" onClick={() => void deleteManagedUser(managedUser.username)} className="inline-flex items-center gap-1 rounded-xl border border-rose-300/60 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-800 hover:bg-rose-100"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
                                 ) : (
                                   <span className="text-xs text-slate-500">Current user</span>
                                 )}
@@ -923,15 +923,15 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
             {section === "settings" ? (
               <section className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                   <h2 className="text-lg font-semibold">Workspace Settings</h2>
-                  <p className="mt-2 text-sm text-slate-400">Environment: Production</p>
-                  <p className="text-sm text-slate-400">API Routes secured with session tokens.</p>
+                  <p className="mt-2 text-sm text-slate-600">Environment: Production</p>
+                  <p className="text-sm text-slate-600">API Routes secured with session tokens.</p>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
                   <h2 className="text-lg font-semibold">Role Permissions</h2>
-                  <p className="mt-2 text-sm text-slate-400">Agency managers can access all outlets and user administration.</p>
-                  <p className="text-sm text-slate-400">Bar managers can publish only to assigned outlets.</p>
+                  <p className="mt-2 text-sm text-slate-600">Agency managers can access all outlets and user administration.</p>
+                  <p className="text-sm text-slate-600">Bar managers can publish only to assigned outlets.</p>
                 </div>
               </section>
             ) : null}
@@ -939,12 +939,12 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-white/10 bg-slate-900/95 lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-black/10 bg-white/90 backdrop-blur lg:hidden">
         {sideNavItems.slice(0, 6).map((item) => {
           const Icon = item.icon;
           const active = section === item.id;
           return (
-            <button key={item.id} type="button" onClick={() => setSection(item.id)} className={cn("flex flex-col items-center gap-1 py-2 text-[11px]", active ? "text-sky-300" : "text-slate-400") }>
+            <button key={item.id} type="button" onClick={() => setSection(item.id)} className={cn("flex flex-col items-center gap-1 py-2 text-[11px]", active ? "text-sky-800" : "text-slate-500") }>
               <Icon className="h-4 w-4" />
               {item.label.split(" ")[0]}
             </button>
@@ -958,9 +958,9 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             key={toast.id}
             className={cn(
               "pointer-events-auto rounded-lg border px-3 py-2 text-sm shadow-xl",
-              toast.tone === "success" && "border-emerald-300/40 bg-emerald-500/20 text-emerald-100",
-              toast.tone === "error" && "border-rose-300/40 bg-rose-500/20 text-rose-100",
-              toast.tone === "info" && "border-sky-300/40 bg-sky-500/20 text-sky-100"
+              toast.tone === "success" && "border-emerald-300/60 bg-emerald-50 text-emerald-900",
+              toast.tone === "error" && "border-rose-300/60 bg-rose-50 text-rose-900",
+              toast.tone === "info" && "border-sky-300/60 bg-sky-50 text-sky-900"
             )}
           >
             {toast.tone === "success" ? <CheckCircle2 className="mr-2 inline h-4 w-4" /> : null}
