@@ -27,12 +27,11 @@ export default function MarketingShell({
       <header className="sticky top-0 z-40 border-b border-black/10 bg-[rgba(251,251,248,0.72)] backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-slate-950 text-white shadow-sm">
-              <span className="text-sm font-black tracking-tight">F</span>
-            </div>
             <div className="leading-none">
-              <div className="text-base font-black tracking-tight">Flext</div>
-              <div className="text-[10px] uppercase tracking-[0.34em] text-emerald-700/80">Social OS</div>
+              <div className="font-display text-base font-black tracking-tight text-slate-950">
+                Flext<span className="text-emerald-700">.</span>
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.34em] text-slate-600">Social OS</div>
             </div>
           </Link>
 

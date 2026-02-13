@@ -1006,8 +1006,46 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         Refresh
                       </button>
                     </div>
-                    <div className="mt-4 overflow-x-auto">
-                      <table className="w-full min-w-[520px] text-sm">
+                    {/* Mobile-first: cards on small screens, table on larger screens */}
+                    <div className="mt-4 grid gap-3 sm:hidden">
+                      {filteredQueue.slice(0, 6).map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => setSelectedRecord(r)}
+                          className="text-left rounded-3xl border border-black/10 bg-white p-4 shadow-sm hover:bg-slate-50"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-black tracking-tight text-slate-950">{r.brand}</p>
+                              <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">{r.target}</p>
+                            </div>
+                            <StatusBadge status={r.status} />
+                          </div>
+                          <div className="mt-3 flex items-center justify-between gap-3">
+                            <p className="text-xs text-slate-600">By {r.created_by}</p>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                void publishQueuedRecord(r.id);
+                              }}
+                              className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-3 py-2 text-xs font-semibold text-white shadow-sm"
+                            >
+                              Publish
+                            </button>
+                          </div>
+                        </button>
+                      ))}
+                      {filteredQueue.length === 0 ? (
+                        <div className="rounded-3xl border border-black/10 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
+                          No queued posts.
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-4 hidden sm:block overflow-x-auto">
+                      <table className="w-full text-sm">
                         <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                           <tr>
                             <th className="pb-2">Outlet</th>
@@ -1048,8 +1086,35 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         View all
                       </button>
                     </div>
-                    <div className="mt-4 overflow-x-auto">
-                      <table className="w-full min-w-[520px] text-sm">
+                    <div className="mt-4 grid gap-3 sm:hidden">
+                      {filteredHistory.slice(0, 6).map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => setSelectedRecord(r)}
+                          className="text-left rounded-3xl border border-black/10 bg-white p-4 shadow-sm hover:bg-slate-50"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-black tracking-tight text-slate-950">{r.brand}</p>
+                              <p className="mt-1 text-xs text-slate-600">{humanDate(r.published_at || r.created_at)}</p>
+                            </div>
+                            <StatusBadge status={r.status} />
+                          </div>
+                          <p className="mt-3 text-xs text-slate-600">
+                            P:{r.post_id || "-"} / S:{r.story_id || "-"}
+                          </p>
+                        </button>
+                      ))}
+                      {filteredHistory.length === 0 ? (
+                        <div className="rounded-3xl border border-black/10 bg-white p-6 text-center text-sm text-slate-600 shadow-sm">
+                          No history yet.
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-4 hidden sm:block overflow-x-auto">
+                      <table className="w-full text-sm">
                         <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                           <tr>
                             <th className="pb-2">Outlet</th>
@@ -1287,8 +1352,42 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 ) : filteredQueue.length === 0 ? (
                   <p className="text-sm text-slate-600">No queued posts.</p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[760px] text-sm">
+                  <>
+                    <div className="grid gap-3 sm:hidden">
+                      {filteredQueue.map((record) => (
+                        <button
+                          key={record.id}
+                          type="button"
+                          onClick={() => setSelectedRecord(record)}
+                          className="text-left rounded-3xl border border-black/10 bg-white p-4 shadow-sm hover:bg-slate-50"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-black tracking-tight text-slate-950">{record.brand}</p>
+                              <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">{record.target}</p>
+                              <p className="mt-1 text-xs text-slate-600">Scheduled: {humanDate(record.scheduled_for)}</p>
+                            </div>
+                            <StatusBadge status={record.status} />
+                          </div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <p className="text-xs text-slate-600">By {record.created_by}</p>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                void publishQueuedRecord(record.id);
+                              }}
+                              className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-3 py-2 text-xs font-semibold text-white shadow-sm"
+                            >
+                              Publish
+                            </button>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="hidden sm:block overflow-x-auto">
+                      <table className="w-full text-sm">
                       <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                         <tr>
                           <th className="pb-2">Outlet</th><th className="pb-2">Target</th><th className="pb-2">Scheduled</th><th className="pb-2">Created By</th><th className="pb-2">Status</th><th className="pb-2">Action</th>
@@ -1316,6 +1415,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       </tbody>
                     </table>
                   </div>
+                  </>
                 )}
               </section>
             ) : null}
@@ -1334,8 +1434,39 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 ) : filteredHistory.length === 0 ? (
                   <p className="text-sm text-slate-600">No history yet.</p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full min-w-[760px] text-sm">
+                  <>
+                    <div className="grid gap-3 sm:hidden">
+                      {filteredHistory.map((record) => (
+                        <button
+                          key={record.id}
+                          type="button"
+                          onClick={() => setSelectedRecord(record)}
+                          className="text-left rounded-3xl border border-black/10 bg-white p-4 shadow-sm hover:bg-slate-50"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-black tracking-tight text-slate-950">{record.brand}</p>
+                              <p className="mt-1 text-xs text-slate-600">{humanDate(record.published_at || record.created_at)}</p>
+                            </div>
+                            <StatusBadge status={record.status} />
+                          </div>
+                          <p className="mt-3 text-xs text-slate-600">P:{record.post_id || "-"} / S:{record.story_id || "-"}</p>
+                          {record.error ? <p className="mt-1 text-xs text-rose-700">{record.error}</p> : null}
+                          {record.status === "failed" ? (
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); void retryHistory(record); }}
+                              className="mt-3 inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold shadow-sm hover:bg-slate-50"
+                            >
+                              Retry
+                            </button>
+                          ) : null}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="hidden sm:block overflow-x-auto">
+                      <table className="w-full text-sm">
                       <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                         <tr>
                           <th className="pb-2">Outlet</th><th className="pb-2">Published At</th><th className="pb-2">Status</th><th className="pb-2">IDs</th><th className="pb-2">Error</th><th className="pb-2">Action</th>
@@ -1367,6 +1498,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       </tbody>
                     </table>
                   </div>
+                  </>
                 )}
               </section>
             ) : null}

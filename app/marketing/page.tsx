@@ -5,8 +5,10 @@ import {
   Boxes,
   CalendarClock,
   Check,
+  ClipboardList,
   Layers3,
   MoveRight,
+  ShieldCheck,
   Shield,
   Sparkles,
   Zap,
@@ -25,6 +27,23 @@ function SoftPanel({ children, className = "" }: { children: React.ReactNode; cl
   return (
     <div className={["rounded-[28px] border border-black/10 bg-white/80 shadow-sm backdrop-blur", className].join(" ")}>
       {children}
+    </div>
+  );
+}
+
+function LogoPills() {
+  const outlets = ["Dravidian", "Fire & Ice", "Barley & Hops", "Scorebar", "Southern Spice"];
+  return (
+    <div className="mt-8 flex flex-wrap items-center gap-2 text-sm text-slate-600">
+      <span className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Built with</span>
+      {outlets.map((name) => (
+        <span
+          key={name}
+          className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm"
+        >
+          {name}
+        </span>
+      ))}
     </div>
   );
 }
@@ -218,11 +237,17 @@ export default function MarketingHome() {
                 </SoftPanel>
               ))}
             </div>
+
+            <div className="sx-fade-up">
+              <LogoPills />
+            </div>
           </div>
 
           <div className="lg:col-span-7">
             <div className="sx-fade-in">
-              <MiniMock />
+              <div className="mx-auto max-w-[520px] lg:max-w-none">
+                <MiniMock />
+              </div>
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -247,6 +272,48 @@ export default function MarketingHome() {
           title="Built for agency reality"
           body="Not another creator tool. Flext is designed around outlets, roles, and the boring-but-critical controls that prevent wrong-page posting."
         />
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-12">
+          <SoftPanel className="p-6 lg:col-span-4">
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl border border-black/10 bg-white text-slate-950">
+                <ShieldCheck className="h-5 w-5 text-emerald-700" />
+              </div>
+              <div>
+                <p className="text-base font-black tracking-tight text-slate-950">Outlet-safe controls</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  Permissions stop accidental wrong-page posting. Outlet managers can publish only for their outlet.
+                </p>
+              </div>
+            </div>
+          </SoftPanel>
+          <SoftPanel className="p-6 lg:col-span-4">
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl border border-black/10 bg-white text-slate-950">
+                <ClipboardList className="h-5 w-5 text-sky-700" />
+              </div>
+              <div>
+                <p className="text-base font-black tracking-tight text-slate-950">Ops visibility</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  Queue, retry, and history so nothing gets buried in group chats. Accountability by outlet.
+                </p>
+              </div>
+            </div>
+          </SoftPanel>
+          <SoftPanel className="p-6 lg:col-span-4">
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl border border-black/10 bg-white text-slate-950">
+                <Zap className="h-5 w-5 text-slate-950" />
+              </div>
+              <div>
+                <p className="text-base font-black tracking-tight text-slate-950">Fast daily workflow</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  Upload poster, generate draft, publish feed and Stories. Carousels when you need “magazine style.”
+                </p>
+              </div>
+            </div>
+          </SoftPanel>
+        </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <BentoCard
