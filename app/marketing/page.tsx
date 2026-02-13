@@ -175,46 +175,17 @@ export default function MarketingHome() {
             </div>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:items-start">
-            <div>
-              <h2 className="text-2xl font-black tracking-tight">A real look at the product</h2>
-              <p className="mt-2 text-sm text-slate-600">
-                These are screenshots from the live app experience: create, queue, history, and admin controls.
-              </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                {[
-                  { src: "/marketing/screens/app-create.svg", label: "Composer workflow" },
-                  { src: "/marketing/screens/app-queue.svg", label: "Publishing queue" },
-                  { src: "/marketing/screens/app-history.svg", label: "History + retry" },
-                  { src: "/marketing/screens/app-admin.svg", label: "User admin + roles" },
-                ].map((img) => (
-                  <div key={img.src} className="overflow-hidden rounded-2xl border border-black/10 bg-white/70 shadow-sm">
-                    <div className="aspect-[16/10]">
-                      <img src={img.src} alt={img.label} className="h-full w-full object-cover" />
-                    </div>
-                    <div className="px-4 py-3 text-sm font-semibold text-slate-900">{img.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-black/10 bg-white/70 p-6 shadow-sm">
-              <h3 className="text-xl font-black tracking-tight">60-second walkthrough</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Short demo video of the real workflow: login, create a draft, check queue/history.
-              </p>
-              <div className="mt-4 overflow-hidden rounded-2xl border border-black/10 bg-white p-5">
-                <p className="text-sm text-slate-700">
-                  Want a clean demo video here? Record a 60s Loom and we will embed it.
-                </p>
-                <a
-                  href="https://ai.scalex.my"
-                  className="mt-4 inline-flex items-center justify-center rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white"
-                >
-                  View live app
-                </a>
-              </div>
-            </div>
+          <div className="mt-12 rounded-3xl border border-black/10 bg-white/70 p-8 shadow-sm">
+            <h3 className="text-xl font-black tracking-tight">60-second walkthrough</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Want a clean demo video here? Record a 60s Loom and we will embed it.
+            </p>
+            <a
+              href="https://ai.scalex.my"
+              className="mt-5 inline-flex items-center justify-center rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white"
+            >
+              View live app
+            </a>
           </div>
 
           <div className="mt-12">
