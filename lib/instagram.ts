@@ -1,5 +1,15 @@
 export type PublishTarget = "post" | "story" | "both";
 
+function toStoryReadyImageUrl(imageUrl: string): string {
+  // If the asset is hosted on Cloudinary, request a story-safe 9:16 variant.
+  // c_pad preserves the full poster and adds adaptive background padding instead of harsh crops.
+  if (!imageUrl.includes("/upload/")) return imageUrl;
+  return imageUrl.replace(
+    "/upload/",
+    "/upload/c_pad,ar_9:16,w_1080,h_1920,b_auto,f_auto,q_auto/"
+  );
+}
+
 async function waitUntilContainerReady(graphBase: string, creationId: string, accessToken: string): Promise<void> {
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
   for (let attempt = 0; attempt < 8; attempt += 1) {
@@ -104,12 +114,13 @@ export async function publishToInstagram(params: {
   }
 
   if (params.target === "story" || params.target === "both") {
+    const storyImageUrl = toStoryReadyImageUrl(params.imageUrl);
     const storyResult = await createAndPublishContainer(
       graphBase,
       igAccountId,
       accessToken,
       new URLSearchParams({
-        image_url: params.imageUrl,
+        image_url: storyImageUrl,
         media_type: "STORIES",
         access_token: accessToken,
       })
