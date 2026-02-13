@@ -6,6 +6,7 @@ import {
   CalendarClock,
   Check,
   Layers3,
+  MoveRight,
   Shield,
   Sparkles,
   Zap,
@@ -17,6 +18,14 @@ function Pill({ children }: { children: React.ReactNode }) {
     <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
       {children}
     </span>
+  );
+}
+
+function SoftPanel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={["rounded-[28px] border border-black/10 bg-white/80 shadow-sm backdrop-blur", className].join(" ")}>
+      {children}
+    </div>
   );
 }
 
@@ -33,7 +42,7 @@ function SectionHead({
     <div className="grid gap-3 lg:grid-cols-12 lg:items-end">
       <div className="lg:col-span-5">
         <p className="text-xs font-semibold uppercase tracking-[0.26em] text-emerald-700/80">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{title}</h2>
+        <h2 className="font-display mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{title}</h2>
       </div>
       <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7 lg:pl-6">{body}</p>
     </div>
@@ -75,8 +84,8 @@ function BentoCard({
 
 function MiniMock() {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-sm">
-      <div className="absolute inset-0 bg-[radial-gradient(900px_450px_at_80%_-20%,rgba(14,165,233,0.18),transparent_60%),radial-gradient(900px_450px_at_-10%_120%,rgba(16,185,129,0.16),transparent_55%)]" />
+    <div className="relative overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-sm">
+      <div className="absolute inset-0 bg-[radial-gradient(980px_480px_at_75%_-20%,rgba(14,165,233,0.18),transparent_60%),radial-gradient(980px_480px_at_-10%_120%,rgba(16,185,129,0.16),transparent_55%)]" />
       <div className="relative p-6">
         <div className="flex items-center justify-between">
           <div className="text-sm font-black tracking-tight text-slate-950">Flext</div>
@@ -165,52 +174,69 @@ export default function MarketingHome() {
     <MarketingShell>
       <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:pb-16 sm:pt-14">
         <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-5 lg:pt-4">
-            <Pill>
-              <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
-              Internal ops, product-ready later
-            </Pill>
+          <div className="lg:col-span-5 lg:pt-2">
+            <div className="sx-fade-up">
+              <Pill>
+                <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
+                Built for agencies and outlet teams
+              </Pill>
+            </div>
 
-            <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
-              Posting ops for multi-outlet teams that can not afford mistakes.
+            <h1 className="font-display sx-fade-up mt-6 text-[clamp(2.25rem,3.6vw,3.75rem)] font-black leading-[1.02] tracking-[-0.02em] text-slate-950">
+              From poster to post, without wrong-page mistakes.
             </h1>
 
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-700">
-              Flext turns event posters into outlet-fit captions and publishes to Instagram with role-based control.
-              Batch, queue, audit, retry, and let outlet managers post safely without waiting.
+            <p className="sx-fade-up mt-4 max-w-xl text-base leading-relaxed text-slate-700">
+              Flext is social publishing ops: generate outlet-fit captions from posters, publish feed and Stories, and keep teams
+              safe with role-based outlet control.
             </p>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="sx-fade-up mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="https://ai.scalex.my"
                 className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 transition"
               >
-                Open the app <ArrowRight className="ml-2 h-4 w-4" />
+                Open app <ArrowRight className="ml-2 h-4 w-4" />
               </a>
               <Link
-                href="/pricing"
+                href="/features"
                 className="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 transition"
               >
-                See pricing
+                See how it works <MoveRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
 
-            <div className="mt-9 grid gap-3 sm:grid-cols-3">
+            <div className="sx-fade-up mt-9 grid gap-3 sm:grid-cols-3">
               {[
-                { label: "Outlet control", value: "Role-gated" },
-                { label: "Posting speed", value: "Batch-first" },
-                { label: "Accountability", value: "Audit trail" },
+                { label: "Safety", value: "Role-gated outlets" },
+                { label: "Speed", value: "Batch + queue" },
+                { label: "Clarity", value: "Audit trail" },
               ].map((s) => (
-                <div key={s.label} className="rounded-3xl border border-black/10 bg-white p-4 shadow-sm">
+                <SoftPanel key={s.label} className="p-4">
                   <div className="text-lg font-black tracking-tight text-slate-950">{s.value}</div>
                   <div className="mt-1 text-sm text-slate-600">{s.label}</div>
-                </div>
+                </SoftPanel>
               ))}
             </div>
           </div>
 
           <div className="lg:col-span-7">
-            <MiniMock />
+            <div className="sx-fade-in">
+              <MiniMock />
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                { k: "Agency manager", v: "Posts across outlets" },
+                { k: "Outlet manager", v: "Posts only their outlet" },
+                { k: "Ops", v: "Queue, retry, history" },
+              ].map((x) => (
+                <SoftPanel key={x.k} className="p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">{x.k}</p>
+                  <p className="mt-1 text-sm font-black tracking-tight text-slate-950">{x.v}</p>
+                </SoftPanel>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -314,7 +340,7 @@ export default function MarketingHome() {
           <div className="grid gap-6 md:grid-cols-12 md:items-center">
             <div className="md:col-span-7">
               <p className="text-xs font-semibold uppercase tracking-[0.26em] text-sky-700/80">60-second evaluation</p>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Try it with one poster</h3>
+              <h3 className="font-display mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Try it with one poster</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Open the app, upload a poster, generate a draft, and publish. If you want a demo video here later, send a Loom link and we will embed it.
               </p>

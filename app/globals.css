@@ -31,6 +31,41 @@ body {
   font-family: var(--font-sans), "Segoe UI", sans-serif;
 }
 
+.font-display {
+  font-family: var(--font-display), var(--font-sans), ui-serif, Georgia, serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sx-fade-up {
+    animation: sx-fade-up 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .sx-fade-in {
+    animation: sx-fade-in 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes sx-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes sx-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 html.theme-app {
   color-scheme: light;
   --bg: #f7f8f4;
