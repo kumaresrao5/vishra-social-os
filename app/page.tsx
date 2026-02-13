@@ -110,7 +110,13 @@ export default function HomePage() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail ?? "Publish failed.");
-      setMessage(`Published successfully. Instagram Post ID: ${data.instagram_post_id}`);
+      if (data.story_success) {
+        setMessage(
+          `Published post (${data.instagram_post_id}) and story (${data.instagram_story_id}) successfully.`
+        );
+      } else {
+        setMessage(`Post published (${data.instagram_post_id}). Story status: ${data.detail}`);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error during publishing.");
     } finally {
@@ -196,7 +202,7 @@ export default function HomePage() {
               className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPublishing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Rocket className="h-5 w-5" />}
-              {isPublishing ? "Publishing..." : "Post Now"}
+              {isPublishing ? "Publishing Post + Story..." : "Post + Story Now"}
             </button>
           </article>
         )}
