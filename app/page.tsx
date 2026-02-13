@@ -22,6 +22,15 @@ type AppUser = {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
+function ScaleXLogo({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={compact ? "" : "mb-2"}>
+      <p className={`${compact ? "text-lg" : "text-2xl"} font-black tracking-tight text-white`}>SCALE X</p>
+      {!compact ? <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/80">Since 2023</p> : null}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -206,7 +215,8 @@ export default function HomePage() {
           onSubmit={onLoginSubmit}
           className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6"
         >
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">Scale X Social OS</p>
+          <ScaleXLogo compact />
+          <p className="mb-1 mt-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">Internal Social OS</p>
           <h1 className="mb-4 text-2xl font-bold">Team Login</h1>
           <label className="mb-2 block text-sm font-medium text-slate-300">Email</label>
           <input
@@ -243,10 +253,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-slate-800 bg-gradient-to-r from-cyan-600 via-sky-700 to-indigo-900 px-6 py-14">
         <div className="mx-auto max-w-5xl">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles className="h-4 w-4" />
-              Scale X Social OS
-            </p>
+            <ScaleXLogo compact />
             <button
               type="button"
               onClick={logout}
@@ -257,10 +264,9 @@ export default function HomePage() {
             </button>
           </div>
 
-          <h1 className="text-3xl font-bold leading-tight md:text-5xl">AI-Powered Instagram Automation</h1>
+          <h1 className="text-3xl font-bold leading-tight md:text-5xl">Scale X Internal Publishing Console</h1>
           <p className="mt-3 max-w-2xl text-sm text-cyan-100 md:text-base">
-            Upload once, generate high-converting captions with Groq, edit the draft, and publish directly using
-            Meta Graph API.
+            Upload posters, generate caption drafts, and publish to Instagram with role-based control across outlets.
           </p>
         </div>
       </section>
