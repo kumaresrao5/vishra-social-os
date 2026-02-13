@@ -10,7 +10,16 @@ export default function ThemeClass() {
 
   useEffect(() => {
     const html = document.documentElement;
-    const isMarketing = pathname === "/marketing" || pathname.startsWith("/marketing/");
+    const host = typeof window !== "undefined" ? window.location.hostname : "";
+    const isMarketingPath = pathname === "/marketing" || pathname.startsWith("/marketing/");
+    const isAppHost = host.startsWith("ai.");
+    const isMarketingHost = host.startsWith("www.") || host === "scalex.my";
+
+    // Rules:
+    // - Local dev uses /marketing/*, so prefer path-based detection.
+    // - Production uses host-based routing: ai.* for app and www.* for marketing.
+    // - Default to app for localhost and unknown hosts.
+    const isMarketing = isMarketingPath || (!isAppHost && isMarketingHost);
 
     html.classList.toggle("theme-app", !isMarketing);
     html.classList.toggle("theme-marketing", isMarketing);
@@ -18,4 +27,3 @@ export default function ThemeClass() {
 
   return null;
 }
-
