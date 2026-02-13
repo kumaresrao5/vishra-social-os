@@ -20,6 +20,12 @@ type AppUser = {
   brands: string[];
 };
 
+type ManagedUser = {
+  username: string;
+  role: "agency_manager" | "bar_manager";
+  brands: string[];
+};
+
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
 function ScaleXLogo({ compact = false }: { compact?: boolean }) {
@@ -48,6 +54,12 @@ export default function HomePage() {
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [managedUsers, setManagedUsers] = useState<ManagedUser[]>([]);
+  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState<"agency_manager" | "bar_manager">("bar_manager");
+  const [newBrands, setNewBrands] = useState("");
 
   const hashtagsLine = useMemo(() => (analysis ? analysis.hashtags.join(" ") : ""), [analysis]);
 
@@ -64,6 +76,24 @@ export default function HomePage() {
     };
     void bootstrap();
   }, []);
+
+  useEffect(() => {
+    if (!user || user.role !== "agency_manager") return;
+    const loadUsers = async () => {
+      setIsUsersLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/users`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail ?? "Failed loading users.");
+        setManagedUsers(data.users ?? []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed loading users.");
+      } finally {
+        setIsUsersLoading(false);
+      }
+    };
+    void loadUsers();
+  }, [user]);
 
   function resetFeedback() {
     setError("");
@@ -101,6 +131,58 @@ export default function HomePage() {
     setCaption("");
     setMessage("");
     setError("");
+    setManagedUsers([]);
+  }
+
+  async function createUser() {
+    if (!newUsername.trim() || !newPassword.trim()) {
+      setError("New user requires username and password.");
+      return;
+    }
+    setError("");
+    const brands =
+      newRole === "agency_manager"
+        ? ["*"]
+        : newBrands
+            .split(",")
+            .map((b) => b.trim())
+            .filter(Boolean);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: newUsername.trim(),
+          password: newPassword,
+          role: newRole,
+          brands,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail ?? "Failed to create user.");
+      setManagedUsers(data.users ?? []);
+      setNewUsername("");
+      setNewPassword("");
+      setNewBrands("");
+      setMessage("User saved.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create user.");
+    }
+  }
+
+  async function deleteManagedUser(username: string) {
+    setError("");
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/users/${encodeURIComponent(username)}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail ?? "Failed to delete user.");
+      setManagedUsers(data.users ?? []);
+      setMessage(`Deleted user: ${username}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete user.");
+    }
   }
 
   function applyFile(file: File) {
@@ -366,6 +448,79 @@ export default function HomePage() {
         )}
         {error && (
           <p className="rounded-lg border border-rose-700 bg-rose-900/30 p-3 text-sm text-rose-300">{error}</p>
+        )}
+
+        {user.role === "agency_manager" && (
+          <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <h3 className="text-lg font-semibold">Admin Panel</h3>
+            <p className="mt-1 text-sm text-slate-400">Create users and assign outlet permissions.</p>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              <input
+                type="text"
+                placeholder="Username"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-400"
+              />
+              <input
+                type="text"
+                placeholder="Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-400"
+              />
+              <select
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value as "agency_manager" | "bar_manager")}
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+                <option value="bar_manager">bar_manager</option>
+                <option value="agency_manager">agency_manager</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Brands (comma separated), e.g. barley & hops"
+                value={newBrands}
+                onChange={(e) => setNewBrands(e.target.value)}
+                disabled={newRole === "agency_manager"}
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-60"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={createUser}
+              className="mt-4 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950"
+            >
+              Save User
+            </button>
+
+            <div className="mt-6 space-y-2">
+              {isUsersLoading ? <p className="text-sm text-slate-400">Loading users...</p> : null}
+              {managedUsers.map((managedUser) => (
+                <div
+                  key={managedUser.username}
+                  className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-sm"
+                >
+                  <div>
+                    <p className="font-semibold">{managedUser.username}</p>
+                    <p className="text-slate-400">
+                      {managedUser.role} | brands: {managedUser.brands.join(", ")}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => deleteManagedUser(managedUser.username)}
+                    disabled={managedUser.username === user.username}
+                    className="rounded-md border border-rose-700 px-3 py-1 text-rose-300 disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </section>
     </main>

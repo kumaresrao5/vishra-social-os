@@ -32,6 +32,9 @@ Open `http://localhost:3000`.
 - `CLOUDINARY_UPLOAD_PRESET` (unsigned preset)
 - `AUTH_SECRET` (long random string)
 - `TEAM_USERS` (JSON array of users and allowed brands)
+- Optional for live in-app user management:
+  - `UPSTASH_REDIS_REST_URL`
+  - `UPSTASH_REDIS_REST_TOKEN`
 
 Optional:
 - `NEXT_PUBLIC_API_BASE_URL` (leave empty to use same-origin `/api/*` routes)
@@ -49,6 +52,9 @@ Optional:
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 - `POST /api/auth/logout`
+- `GET /api/admin/users` (agency_manager only)
+- `POST /api/admin/users` (agency_manager only)
+- `DELETE /api/admin/users/:username` (agency_manager only)
 
 - `POST /api/analyze`
   - Accepts JPG/PNG poster upload

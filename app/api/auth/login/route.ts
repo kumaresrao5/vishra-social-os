@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { authenticateUser, createSessionToken, SESSION_COOKIE } from "@/lib/auth";
+import { createSessionToken, SESSION_COOKIE } from "@/lib/auth";
+import { authenticateUser } from "@/lib/team-users";
 
 type LoginPayload = {
   username?: string;
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ detail: "Username and password are required." }, { status: 400 });
     }
 
-    const user = authenticateUser(username, password);
+    const user = await authenticateUser(username, password);
     if (!user) {
       return NextResponse.json({ detail: "Invalid credentials." }, { status: 401 });
     }
