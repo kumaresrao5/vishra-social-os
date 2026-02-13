@@ -89,15 +89,17 @@ function humanDate(value?: string): string {
 function FlextLogo() {
   return (
     <div className="leading-none">
-      <p className="text-xl font-black tracking-tight text-slate-950">FLEXT</p>
-      <p className="text-[10px] uppercase tracking-[0.28em] text-emerald-700/80">Social OS</p>
+      <p className="font-display text-xl font-black tracking-tight text-slate-950">
+        Flext<span className="text-emerald-700">.</span>
+      </p>
+      <p className="text-[10px] uppercase tracking-[0.34em] text-slate-600">Social OS</p>
     </div>
   );
 }
 
 function SoftCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-3xl border border-black/10 bg-white/75 shadow-sm backdrop-blur", className)}>
+    <div className={cn("rounded-[28px] border border-black/10 bg-white/80 shadow-sm backdrop-blur", className)}>
       {children}
     </div>
   );
@@ -916,7 +918,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           <header className="sticky top-0 z-30 border-b border-black/10 bg-white/75 px-4 py-3 backdrop-blur lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h1 className="text-lg font-black tracking-tight">Flext Social OS</h1>
+                <h1 className="font-display text-lg font-black tracking-tight text-slate-950">Flext Social OS</h1>
                 <p className="text-xs text-slate-600">{user.username} • {user.role.replace("_", " ")}</p>
               </div>
 
