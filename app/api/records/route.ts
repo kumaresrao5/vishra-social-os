@@ -6,6 +6,7 @@ import type { RecordTarget } from "@/lib/publish-records";
 
 type CreateRecordPayload = {
   image_url?: string;
+  image_urls?: string[];
   caption?: string;
   brand?: string;
   target?: RecordTarget;
@@ -39,13 +40,14 @@ export async function POST(request: Request) {
     if (!session) return NextResponse.json({ detail: "Unauthorized" }, { status: 401 });
 
     const payload = (await request.json()) as CreateRecordPayload;
-    const imageUrl = payload.image_url?.trim();
+    const urls = Array.isArray(payload.image_urls) ? payload.image_urls.map((u) => String(u).trim()).filter(Boolean) : [];
+    const imageUrl = payload.image_url?.trim() || urls[0] || "";
     const caption = payload.caption?.trim();
     const brand = payload.brand?.trim();
     const target: RecordTarget = payload.target === "story" || payload.target === "both" ? payload.target : "post";
 
     if (!imageUrl || !caption || !brand) {
-      return NextResponse.json({ detail: "image_url, caption and brand are required." }, { status: 400 });
+      return NextResponse.json({ detail: "image_url (or image_urls), caption and brand are required." }, { status: 400 });
     }
     if (!canPublishBrand(session, brand)) {
       return NextResponse.json({ detail: `You are not allowed to queue brand: ${brand}` }, { status: 403 });
@@ -55,6 +57,7 @@ export async function POST(request: Request) {
       brand,
       caption,
       image_url: imageUrl,
+      image_urls: urls.length > 0 ? urls : undefined,
       target,
       status: "queued",
       scheduled_for: payload.scheduled_for?.trim() || undefined,

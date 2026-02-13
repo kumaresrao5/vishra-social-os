@@ -25,6 +25,7 @@ export async function POST(
   try {
     const published = await publishToInstagram({
       imageUrl: record.image_url,
+      imageUrls: record.image_urls,
       caption: record.caption,
       brand: record.brand,
       target: record.target,

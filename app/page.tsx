@@ -1,5 +1,5 @@
 import DashboardApp from "@/components/dashboard-app";
 
 export default function HomePage() {
-  return <DashboardApp initialSection="create" />;
+  return <DashboardApp initialSection="dashboard" />;
 }
