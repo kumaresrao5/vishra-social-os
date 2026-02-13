@@ -7,7 +7,10 @@ export type PublishRecord = {
   id: string;
   brand: string;
   caption: string;
+  // Primary preview image.
   image_url: string;
+  // Optional carousel/magazine images for feed posts.
+  image_urls?: string[];
   target: RecordTarget;
   status: RecordStatus;
   created_by: string;
@@ -35,12 +38,16 @@ function getRedisClient(): Redis {
 }
 
 function normalizeRecord(record: PublishRecord): PublishRecord {
+  const urls = Array.isArray(record.image_urls) ? record.image_urls.map((u) => String(u).trim()).filter(Boolean) : [];
+  const primary = record.image_url ? String(record.image_url).trim() : "";
+  const image_url = primary || urls[0] || "";
   return {
     ...record,
     id: String(record.id),
     brand: String(record.brand),
     caption: String(record.caption),
-    image_url: String(record.image_url),
+    image_url,
+    image_urls: urls.length > 0 ? urls : undefined,
     target: record.target,
     status: record.status,
     created_by: String(record.created_by),

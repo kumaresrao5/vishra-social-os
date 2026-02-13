@@ -81,10 +81,10 @@ function humanDate(value?: string): string {
   return dt.toLocaleString();
 }
 
-function ScaleXLogo() {
+function FlextLogo() {
   return (
     <div className="leading-none">
-      <p className="text-xl font-black tracking-tight text-white">SCALE X</p>
+      <p className="text-xl font-black tracking-tight text-white">FLEXT</p>
       <p className="text-[10px] uppercase tracking-[0.28em] text-sky-300/85">Social OS</p>
     </div>
   );
@@ -524,7 +524,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
     return (
       <main className="grid min-h-screen place-items-center bg-slate-950 px-6 text-slate-100">
         <form onSubmit={onLoginSubmit} className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-6 backdrop-blur">
-          <ScaleXLogo />
+          <FlextLogo />
           <p className="mt-2 text-xs uppercase tracking-[0.2em] text-sky-300">Internal access</p>
           <h1 className="mt-3 text-2xl font-bold">Team Login</h1>
           <p className="mb-5 mt-1 text-sm text-slate-400">Use your username credentials to manage outlet publishing.</p>
@@ -563,7 +563,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <div className="flex min-h-screen">
         <aside className="hidden w-64 shrink-0 border-r border-white/10 bg-slate-900/80 p-5 lg:flex lg:flex-col">
-          <ScaleXLogo />
+          <FlextLogo />
           <p className="mt-3 text-xs text-slate-400">AI publishing command center</p>
 
           <nav className="mt-8 space-y-1">
@@ -600,7 +600,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 px-4 py-3 backdrop-blur lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h1 className="text-lg font-semibold">Scale X Social OS</h1>
+                <h1 className="text-lg font-semibold">Flext Social OS</h1>
                 <p className="text-xs text-slate-400">{user.username} • {user.role.replace("_", " ")}</p>
               </div>
 

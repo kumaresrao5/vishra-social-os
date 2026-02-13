@@ -6,6 +6,7 @@ import { publishToInstagram, PublishTarget } from "@/lib/instagram";
 
 type PublishPayload = {
   image_url?: string;
+  image_urls?: string[];
   caption?: string;
   brand?: string;
   target?: PublishTarget;
@@ -14,7 +15,7 @@ type PublishPayload = {
 export async function POST(request: Request) {
   let recordId = "";
   try {
-    const { image_url, caption, brand, target } = (await request.json()) as PublishPayload;
+    const { image_url, image_urls, caption, brand, target } = (await request.json()) as PublishPayload;
     const token = cookies().get(SESSION_COOKIE)?.value;
     const session = token ? await verifySessionToken(token) : null;
     if (!session) {
@@ -23,9 +24,9 @@ export async function POST(request: Request) {
 
     const publishTarget: PublishTarget = target === "story" || target === "both" ? target : "post";
 
-    if (!image_url?.trim()) {
-      return NextResponse.json({ detail: "image_url is required." }, { status: 400 });
-    }
+    const urls = Array.isArray(image_urls) ? image_urls.map((u) => String(u).trim()).filter(Boolean) : [];
+    const primaryUrl = image_url?.trim() || urls[0] || "";
+    if (!primaryUrl) return NextResponse.json({ detail: "image_url or image_urls is required." }, { status: 400 });
     if (!caption?.trim()) {
       return NextResponse.json({ detail: "Caption cannot be empty." }, { status: 400 });
     }
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
     const record = await addRecord({
       brand: brand.trim(),
       caption: caption.trim(),
-      image_url: image_url.trim(),
+      image_url: primaryUrl,
+      image_urls: urls.length > 0 ? urls : undefined,
       target: publishTarget,
       status: "queued",
       created_by: session.username,
@@ -50,7 +52,8 @@ export async function POST(request: Request) {
     recordId = record.id;
 
     const published = await publishToInstagram({
-      imageUrl: image_url.trim(),
+      imageUrl: primaryUrl,
+      imageUrls: urls.length > 0 ? urls : undefined,
       caption: caption.trim(),
       brand: brand.trim(),
       target: publishTarget,

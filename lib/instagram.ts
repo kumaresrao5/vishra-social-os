@@ -71,6 +71,69 @@ async function createAndPublishContainer(
   return { creationId, publishedId: publishJson.id };
 }
 
+async function createCarouselContainer(
+  graphBase: string,
+  igAccountId: string,
+  accessToken: string,
+  imageUrls: string[],
+  caption: string
+): Promise<{ creationId: string; publishedId: string; childCreationIds: string[] }> {
+  const childCreationIds: string[] = [];
+  for (const url of imageUrls) {
+    const createResp = await fetch(`${graphBase}/${igAccountId}/media`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        image_url: url,
+        is_carousel_item: "true",
+        access_token: accessToken,
+      }),
+    });
+    const createJson = (await createResp.json()) as { id?: string; error?: { message?: string } };
+    if (!createResp.ok || !createJson.id) {
+      throw new Error(createJson.error?.message ?? "Failed creating carousel item container.");
+    }
+    childCreationIds.push(createJson.id);
+  }
+
+  for (const childId of childCreationIds) {
+    await waitUntilContainerReady(graphBase, childId, accessToken);
+  }
+
+  const parentCreateResp = await fetch(`${graphBase}/${igAccountId}/media`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      media_type: "CAROUSEL",
+      children: childCreationIds.join(","),
+      caption,
+      access_token: accessToken,
+    }),
+  });
+  const parentCreateJson = (await parentCreateResp.json()) as { id?: string; error?: { message?: string } };
+  if (!parentCreateResp.ok || !parentCreateJson.id) {
+    throw new Error(parentCreateJson.error?.message ?? "Failed creating carousel container.");
+  }
+
+  const creationId = parentCreateJson.id;
+  await waitUntilContainerReady(graphBase, creationId, accessToken);
+
+  const publishResp = await fetch(`${graphBase}/${igAccountId}/media_publish`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      creation_id: creationId,
+      access_token: accessToken,
+    }),
+  });
+  const publishJson = (await publishResp.json()) as { id?: string; error?: { message?: string } };
+  if (!publishResp.ok || !publishJson.id) {
+    throw new Error(publishJson.error?.message ?? "Failed publishing carousel.");
+  }
+
+  return { creationId, publishedId: publishJson.id, childCreationIds };
+}
+
 export function pickInstagramAccountId(brand: string | undefined): string | undefined {
   const normalized = (brand ?? "").toLowerCase();
   if (normalized.includes("dravidian")) return process.env.DRAVIDIAN_IG_ID;
@@ -82,11 +145,12 @@ export function pickInstagramAccountId(brand: string | undefined): string | unde
 }
 
 export async function publishToInstagram(params: {
-  imageUrl: string;
+  imageUrl?: string;
+  imageUrls?: string[];
   caption: string;
   brand: string;
   target: PublishTarget;
-}): Promise<{ postId?: string; storyId?: string }> {
+}): Promise<{ postId?: string; storyId?: string; carouselChildCreationIds?: string[] }> {
   const accessToken = process.env.META_ACCESS_TOKEN;
   const igAccountId = pickInstagramAccountId(params.brand);
 
@@ -97,24 +161,47 @@ export async function publishToInstagram(params: {
   }
 
   const graphBase = "https://graph.facebook.com/v21.0";
-  const result: { postId?: string; storyId?: string } = {};
+  const result: { postId?: string; storyId?: string; carouselChildCreationIds?: string[] } = {};
+
+  const imageUrls = Array.isArray(params.imageUrls) && params.imageUrls.length > 0
+    ? params.imageUrls
+    : params.imageUrl
+      ? [params.imageUrl]
+      : [];
+
+  if (imageUrls.length === 0) {
+    throw new Error("imageUrl or imageUrls is required.");
+  }
 
   if (params.target === "post" || params.target === "both") {
-    const feedResult = await createAndPublishContainer(
-      graphBase,
-      igAccountId,
-      accessToken,
-      new URLSearchParams({
-        image_url: params.imageUrl,
-        caption: params.caption,
-        access_token: accessToken,
-      })
-    );
-    result.postId = feedResult.publishedId;
+    if (imageUrls.length === 1) {
+      const feedResult = await createAndPublishContainer(
+        graphBase,
+        igAccountId,
+        accessToken,
+        new URLSearchParams({
+          image_url: imageUrls[0],
+          caption: params.caption,
+          access_token: accessToken,
+        })
+      );
+      result.postId = feedResult.publishedId;
+    } else {
+      const carousel = await createCarouselContainer(
+        graphBase,
+        igAccountId,
+        accessToken,
+        imageUrls,
+        params.caption
+      );
+      result.postId = carousel.publishedId;
+      result.carouselChildCreationIds = carousel.childCreationIds;
+    }
   }
 
   if (params.target === "story" || params.target === "both") {
-    const storyImageUrl = toStoryReadyImageUrl(params.imageUrl);
+    // Stories do not support carousel: we publish only the first image.
+    const storyImageUrl = toStoryReadyImageUrl(imageUrls[0]);
     const storyResult = await createAndPublishContainer(
       graphBase,
       igAccountId,

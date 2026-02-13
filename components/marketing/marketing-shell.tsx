@@ -22,7 +22,7 @@ export default function MarketingShell({
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
             <div className="leading-none">
-              <div className="text-lg font-black tracking-tight">SCALE X</div>
+              <div className="text-lg font-black tracking-tight">FLEXT</div>
               <div className="text-[10px] uppercase tracking-[0.28em] text-sky-700/80">Social OS</div>
             </div>
           </Link>
@@ -53,7 +53,7 @@ export default function MarketingShell({
       <footer className="border-t border-black/10 bg-white/70">
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 md:grid-cols-3">
           <div>
-            <div className="text-base font-bold">Scale X</div>
+            <div className="text-base font-bold">Flext</div>
             <p className="mt-2 text-sm text-slate-600">
               Internal-grade social automation that becomes enterprise-ready when you decide to sell.
             </p>

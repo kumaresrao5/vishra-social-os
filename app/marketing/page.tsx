@@ -61,13 +61,13 @@ export default function MarketingHome() {
                 Turn event posters into consistent posts in minutes, across outlets and staff.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-700">
-                Scale X Social OS is built for agencies and multi-outlet teams. Upload a poster, generate a brand-fit caption,
+                Flext Social OS is built for agencies and multi-outlet teams. Upload a poster, generate a brand-fit caption,
                 review quickly, then publish or queue with role-based permissions.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
-                  href="mailto:hello@scalex.my?subject=Scale%20X%20Social%20OS%20Demo"
+                  href="mailto:hello@scalex.my?subject=Flext%20Social%20OS%20Demo"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white"
                 >
                   Book a demo <ArrowRight className="ml-2 h-4 w-4" />
@@ -166,7 +166,7 @@ export default function MarketingHome() {
                   See features
                 </Link>
                 <a
-                  href="mailto:hello@scalex.my?subject=Scale%20X%20Social%20OS%20Pricing"
+                  href="mailto:hello@scalex.my?subject=Flext%20Social%20OS%20Pricing"
                   className="inline-flex items-center justify-center rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white"
                 >
                   Talk pricing

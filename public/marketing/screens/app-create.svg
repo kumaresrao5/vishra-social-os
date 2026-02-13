@@ -26,7 +26,7 @@
 
     <!-- Sidebar -->
     <rect x="80" y="134" width="280" height="796" fill="url(#accent)" opacity="0.98"/>
-    <text x="120" y="192" font-family="ui-sans-serif, system-ui" font-size="22" font-weight="800" fill="#ffffff">SCALE X</text>
+    <text x="120" y="192" font-family="ui-sans-serif, system-ui" font-size="22" font-weight="800" fill="#ffffff">FLEXT</text>
     <text x="120" y="214" font-family="ui-sans-serif, system-ui" font-size="10" font-weight="700" letter-spacing="3" fill="#93c5fd">SOCIAL OS</text>
 
     <g font-family="ui-sans-serif, system-ui" font-size="14" fill="#cbd5e1">

@@ -1,4 +1,4 @@
-# Vishra Social OS
+# Flext Social OS
 
 Social media automation app running fully on Vercel (free tier):
 - Next.js frontend

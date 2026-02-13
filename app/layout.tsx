@@ -5,8 +5,8 @@ import "./globals.css";
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Scale X Social OS",
-  description: "Internal AI-assisted social publishing control center.",
+  title: "Flext Social OS",
+  description: "AI-assisted social publishing control center for multi-outlet teams.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
