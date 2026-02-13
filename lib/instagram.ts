@@ -1,0 +1,121 @@
+export type PublishTarget = "post" | "story" | "both";
+
+async function waitUntilContainerReady(graphBase: string, creationId: string, accessToken: string): Promise<void> {
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const statusResp = await fetch(
+      `${graphBase}/${creationId}?fields=status_code,status&access_token=${encodeURIComponent(accessToken)}`
+    );
+    const statusJson = (await statusResp.json()) as {
+      status_code?: string;
+      status?: string;
+      error?: { message?: string };
+    };
+
+    if (!statusResp.ok) {
+      throw new Error(statusJson.error?.message ?? "Failed checking media container status.");
+    }
+
+    const statusCode = (statusJson.status_code ?? statusJson.status ?? "").toUpperCase();
+    if (statusCode === "FINISHED" || statusCode === "PUBLISHED") return;
+    if (statusCode === "ERROR" || statusCode === "EXPIRED") {
+      throw new Error(`Media container is not publishable. Current status: ${statusCode}`);
+    }
+
+    await wait(2000);
+  }
+}
+
+async function createAndPublishContainer(
+  graphBase: string,
+  igAccountId: string,
+  accessToken: string,
+  body: URLSearchParams
+): Promise<{ creationId: string; publishedId: string }> {
+  const createResp = await fetch(`${graphBase}/${igAccountId}/media`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const createJson = (await createResp.json()) as { id?: string; error?: { message?: string } };
+  if (!createResp.ok || !createJson.id) {
+    throw new Error(createJson.error?.message ?? "Failed creating media container.");
+  }
+
+  const creationId = createJson.id;
+  await waitUntilContainerReady(graphBase, creationId, accessToken);
+
+  const publishResp = await fetch(`${graphBase}/${igAccountId}/media_publish`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      creation_id: creationId,
+      access_token: accessToken,
+    }),
+  });
+  const publishJson = (await publishResp.json()) as { id?: string; error?: { message?: string } };
+  if (!publishResp.ok || !publishJson.id) {
+    throw new Error(publishJson.error?.message ?? "Failed publishing media.");
+  }
+
+  return { creationId, publishedId: publishJson.id };
+}
+
+export function pickInstagramAccountId(brand: string | undefined): string | undefined {
+  const normalized = (brand ?? "").toLowerCase();
+  if (normalized.includes("dravidian")) return process.env.DRAVIDIAN_IG_ID;
+  if (normalized.includes("fire") || normalized.includes("ice")) return process.env.FIREANDICE_IG_ID;
+  if (normalized.includes("barley") || normalized.includes("hops")) return process.env.BARLEYHOPS_IG_ID;
+  if (normalized.includes("score")) return process.env.SCOREBAR_IG_ID;
+  if (normalized.includes("southern") || normalized.includes("spice")) return process.env.SOUTHERNSPICE_IG_ID;
+  return process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID;
+}
+
+export async function publishToInstagram(params: {
+  imageUrl: string;
+  caption: string;
+  brand: string;
+  target: PublishTarget;
+}): Promise<{ postId?: string; storyId?: string }> {
+  const accessToken = process.env.META_ACCESS_TOKEN;
+  const igAccountId = pickInstagramAccountId(params.brand);
+
+  if (!accessToken || !igAccountId) {
+    throw new Error(
+      "Meta API credentials are missing. Set META_ACCESS_TOKEN and brand IG IDs (or INSTAGRAM_BUSINESS_ACCOUNT_ID)."
+    );
+  }
+
+  const graphBase = "https://graph.facebook.com/v21.0";
+  const result: { postId?: string; storyId?: string } = {};
+
+  if (params.target === "post" || params.target === "both") {
+    const feedResult = await createAndPublishContainer(
+      graphBase,
+      igAccountId,
+      accessToken,
+      new URLSearchParams({
+        image_url: params.imageUrl,
+        caption: params.caption,
+        access_token: accessToken,
+      })
+    );
+    result.postId = feedResult.publishedId;
+  }
+
+  if (params.target === "story" || params.target === "both") {
+    const storyResult = await createAndPublishContainer(
+      graphBase,
+      igAccountId,
+      accessToken,
+      new URLSearchParams({
+        image_url: params.imageUrl,
+        media_type: "STORIES",
+        access_token: accessToken,
+      })
+    );
+    result.storyId = storyResult.publishedId;
+  }
+
+  return result;
+}
