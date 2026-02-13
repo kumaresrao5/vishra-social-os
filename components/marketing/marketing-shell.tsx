@@ -5,7 +5,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="text-sm font-semibold text-slate-700 hover:text-slate-950 transition"
+      className="text-sm font-semibold text-slate-600 hover:text-slate-950 transition"
     >
       {label}
     </Link>
@@ -18,14 +18,9 @@ export default function MarketingShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen text-slate-900">
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(1100px_520px_at_10%_-10%,rgba(16,185,129,0.16),transparent_62%),radial-gradient(980px_560px_at_100%_0%,rgba(14,165,233,0.14),transparent_58%),linear-gradient(to_bottom,#fbfbf8,#f7f7f1_60%,#fbfbf8)]" />
-        <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(#0f172a_1px,transparent_1px)] [background-size:24px_24px]" />
-      </div>
-
-      <header className="sticky top-0 z-40 border-b border-black/10 bg-[rgba(251,251,248,0.72)] backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+    <div className="min-h-screen bg-white text-slate-900">
+      <header className="sticky top-0 z-40 border-b border-black/10 bg-white/85 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
             <div className="leading-none">
               <div className="font-display text-base font-black tracking-tight text-slate-950">
@@ -41,7 +36,7 @@ export default function MarketingShell({
             <NavLink href="/pricing" label="Pricing" />
             <a
               href="https://ai.scalex.my"
-              className="inline-flex items-center justify-center rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-[#155EEF] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#0f4fcf] transition"
             >
               Open app <ArrowRight className="ml-2 h-4 w-4" />
             </a>
@@ -58,7 +53,7 @@ export default function MarketingShell({
                 <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/pricing">Pricing</Link>
                 <a
                   href="https://ai.scalex.my"
-                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
+                  className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-[#155EEF] px-3 py-2 text-sm font-semibold text-white"
                 >
                   Open app <ArrowRight className="ml-2 h-4 w-4" />
                 </a>
@@ -70,8 +65,8 @@ export default function MarketingShell({
 
       <main>{children}</main>
 
-      <footer className="border-t border-black/10 bg-[rgba(251,251,248,0.72)]">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-12 md:grid-cols-3">
+      <footer className="border-t border-black/10 bg-white">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-12 md:grid-cols-3">
           <div>
             <div className="text-base font-black tracking-tight">Flext</div>
             <p className="mt-2 max-w-sm text-sm text-slate-600">
