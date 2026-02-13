@@ -4,6 +4,7 @@ type PublishPayload = {
   image_url?: string;
   caption?: string;
   brand?: string;
+  target?: "post" | "story";
 };
 
 async function waitUntilContainerReady(graphBase: string, creationId: string, accessToken: string): Promise<void> {
@@ -79,7 +80,8 @@ function pickInstagramAccountId(brand: string | undefined): string | undefined {
 
 export async function POST(request: Request) {
   try {
-    const { image_url, caption, brand } = (await request.json()) as PublishPayload;
+    const { image_url, caption, brand, target } = (await request.json()) as PublishPayload;
+    const publishTarget = target === "story" ? "story" : "post";
     const accessToken = process.env.META_ACCESS_TOKEN;
     const igAccountId = pickInstagramAccountId(brand);
 
@@ -101,47 +103,44 @@ export async function POST(request: Request) {
     }
 
     const graphBase = "https://graph.facebook.com/v21.0";
-    const feedResult = await createAndPublishContainer(
-      graphBase,
-      igAccountId,
-      accessToken,
-      new URLSearchParams({
-        image_url: image_url.trim(),
-        caption: caption.trim(),
-        access_token: accessToken,
-      })
-    );
-
-    let storyPublishedId: string | null = null;
-    let storyCreationId: string | null = null;
-    let storyError: string | null = null;
-    try {
-      const storyResult = await createAndPublishContainer(
+    if (publishTarget === "post") {
+      const feedResult = await createAndPublishContainer(
         graphBase,
         igAccountId,
         accessToken,
         new URLSearchParams({
           image_url: image_url.trim(),
-          media_type: "STORIES",
+          caption: caption.trim(),
           access_token: accessToken,
         })
       );
-      storyPublishedId = storyResult.publishedId;
-      storyCreationId = storyResult.creationId;
-    } catch (err) {
-      storyError = err instanceof Error ? err.message : "Story publish failed.";
+
+      return NextResponse.json({
+        success: true,
+        target: "post",
+        media_id: feedResult.creationId,
+        instagram_post_id: feedResult.publishedId,
+        detail: "Post published successfully to Instagram.",
+      });
     }
+
+    const storyResult = await createAndPublishContainer(
+      graphBase,
+      igAccountId,
+      accessToken,
+      new URLSearchParams({
+        image_url: image_url.trim(),
+        media_type: "STORIES",
+        access_token: accessToken,
+      })
+    );
 
     return NextResponse.json({
       success: true,
-      media_id: feedResult.creationId,
-      instagram_post_id: feedResult.publishedId,
-      story_media_id: storyCreationId,
-      instagram_story_id: storyPublishedId,
-      story_success: Boolean(storyPublishedId),
-      detail: storyPublishedId
-        ? "Post and story published successfully to Instagram."
-        : `Post published successfully, but story failed: ${storyError}`,
+      target: "story",
+      story_media_id: storyResult.creationId,
+      instagram_story_id: storyResult.publishedId,
+      detail: "Story published successfully to Instagram.",
     });
   } catch (error) {
     const detail = error instanceof Error ? error.message : "Unexpected error during publishing.";

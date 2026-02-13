@@ -11,6 +11,7 @@ type AnalysisResponse = {
   image_url: string;
   filename: string;
 };
+type PublishTarget = "post" | "story";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
@@ -22,6 +23,7 @@ export default function HomePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [publishTarget, setPublishTarget] = useState<PublishTarget>("post");
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -106,16 +108,19 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/api/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_url: analysis.image_url, caption, brand: analysis.brand }),
+        body: JSON.stringify({
+          image_url: analysis.image_url,
+          caption,
+          brand: analysis.brand,
+          target: publishTarget,
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail ?? "Publish failed.");
-      if (data.story_success) {
-        setMessage(
-          `Published post (${data.instagram_post_id}) and story (${data.instagram_story_id}) successfully.`
-        );
+      if (publishTarget === "post") {
+        setMessage(`Post published successfully. Instagram Post ID: ${data.instagram_post_id}`);
       } else {
-        setMessage(`Post published (${data.instagram_post_id}). Story status: ${data.detail}`);
+        setMessage(`Story published successfully. Instagram Story ID: ${data.instagram_story_id}`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error during publishing.");
@@ -195,6 +200,31 @@ export default function HomePage() {
 
             <p className="mt-3 text-xs text-slate-400">Detected hashtags: {hashtagsLine}</p>
 
+            <div className="mt-4 inline-flex rounded-xl border border-slate-700 bg-slate-950 p-1">
+              <button
+                type="button"
+                onClick={() => setPublishTarget("post")}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                  publishTarget === "post"
+                    ? "bg-cyan-500 text-slate-950"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+              >
+                Post
+              </button>
+              <button
+                type="button"
+                onClick={() => setPublishTarget("story")}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                  publishTarget === "story"
+                    ? "bg-cyan-500 text-slate-950"
+                    : "text-slate-300 hover:bg-slate-800"
+                }`}
+              >
+                Story
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={publishNow}
@@ -202,7 +232,9 @@ export default function HomePage() {
               className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPublishing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Rocket className="h-5 w-5" />}
-              {isPublishing ? "Publishing Post + Story..." : "Post + Story Now"}
+              {isPublishing
+                ? `Publishing ${publishTarget === "post" ? "Post" : "Story"}...`
+                : `Publish ${publishTarget === "post" ? "Post" : "Story"}`}
             </button>
           </article>
         )}
