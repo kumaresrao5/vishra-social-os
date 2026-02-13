@@ -27,13 +27,13 @@ export default function PricingPage() {
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           <Card
             title="Starter"
-            price="$59"
+            price="RM 59"
             body={["1 outlet", "Instagram feed + story", "Queue + history", "Role-based posting (basic)"]}
             cta={<a className="inline-flex w-full justify-center rounded-xl bg-sky-400 px-5 py-3 font-semibold text-slate-950" href="mailto:hello@scalex.my?subject=Starter%20Plan">Talk to sales</a>}
           />
           <Card
             title="Agency"
-            price="$199"
+            price="RM 199"
             body={["Up to 5 outlets", "Roles + admin", "Audit trail", "Queue + retries", "Priority support"]}
             cta={<a className="inline-flex w-full justify-center rounded-xl bg-sky-400 px-5 py-3 font-semibold text-slate-950" href="mailto:hello@scalex.my?subject=Agency%20Plan">Talk to sales</a>}
           />
