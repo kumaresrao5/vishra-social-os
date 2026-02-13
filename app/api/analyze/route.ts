@@ -53,9 +53,9 @@ async function uploadToCloudinary(file: File): Promise<string> {
 
 export async function POST(request: Request) {
   try {
-    const geminiApiKey = process.env.GEMINI_API_KEY;
-    if (!geminiApiKey) {
-      return NextResponse.json({ detail: "GEMINI_API_KEY is not configured." }, { status: 500 });
+    const groqApiKey = process.env.GROQ_API_KEY;
+    if (!groqApiKey) {
+      return NextResponse.json({ detail: "GROQ_API_KEY is not configured." }, { status: 500 });
     }
 
     const form = await request.formData();
@@ -68,54 +68,48 @@ export async function POST(request: Request) {
       return NextResponse.json({ detail: "Only JPG and PNG files are supported." }, { status: 400 });
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const base64Data = Buffer.from(arrayBuffer).toString("base64");
-
-    const geminiModel = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-    const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: [
-            {
-              parts: [
-                {
-                  text:
-                    "Return only strict JSON with keys: brand, caption, hashtags, is_urgent. " +
-                    "hashtags must be an array of exactly 10 hashtag strings.",
-                },
-                {
-                  inline_data: {
-                    mime_type: file.type,
-                    data: base64Data,
-                  },
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.4,
-            maxOutputTokens: 800,
+    const imageUrl = await uploadToCloudinary(file);
+    const groqModel = process.env.GROQ_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct";
+    const groqResp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${groqApiKey}`,
+      },
+      body: JSON.stringify({
+        model: groqModel,
+        temperature: 0.4,
+        max_tokens: 800,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text:
+                  "Return only strict JSON with keys: brand, caption, hashtags, is_urgent. " +
+                  "hashtags must be an array of exactly 10 hashtag strings.",
+              },
+              {
+                type: "image_url",
+                image_url: { url: imageUrl },
+              },
+            ],
           },
-        }),
-      }
-    );
-    const geminiJson = (await geminiResp.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+        ],
+      }),
+    });
+    const groqJson = (await groqResp.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
       error?: { message?: string };
     };
-    if (!geminiResp.ok) {
-      const msg = geminiJson.error?.message ?? "Gemini API call failed.";
+    if (!groqResp.ok) {
+      const msg = groqJson.error?.message ?? "Groq API call failed.";
       return NextResponse.json({ detail: msg }, { status: 502 });
     }
 
-    const responseText = (geminiJson.candidates ?? [])
-      .flatMap((candidate) => candidate.content?.parts ?? [])
-      .map((part) => part.text ?? "")
-      .join("");
+    const responseText = groqJson.choices?.[0]?.message?.content ?? "";
     const parsed = parseModelJson(responseText);
 
     const brand = String(parsed.brand ?? "").trim() || "Unknown";
@@ -145,8 +139,6 @@ export async function POST(request: Request) {
       if (!hashtags.includes(tag)) hashtags.push(tag);
     }
     hashtags = hashtags.slice(0, 10);
-
-    const imageUrl = await uploadToCloudinary(file);
 
     return NextResponse.json({
       brand,

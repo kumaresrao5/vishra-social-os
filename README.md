@@ -3,7 +3,7 @@
 Social media automation app running fully on Vercel (free tier):
 - Next.js frontend
 - Vercel API routes for analyze/publish backend logic
-- Gemini API for caption generation
+- Groq API for caption generation
 - Meta Graph API for Instagram publishing
 - Cloudinary (free tier) for public image hosting before Instagram publish
 
@@ -19,8 +19,8 @@ Open `http://localhost:3000`.
 
 ## Required Environment Variables
 
-- `GEMINI_API_KEY`
-- `GEMINI_MODEL` (default: `gemini-1.5-flash`)
+- `GROQ_API_KEY`
+- `GROQ_MODEL` (default: `meta-llama/llama-4-scout-17b-16e-instruct`)
 - `META_ACCESS_TOKEN`
 - `INSTAGRAM_BUSINESS_ACCOUNT_ID`
 - `CLOUDINARY_CLOUD_NAME`
@@ -41,7 +41,7 @@ Optional:
 
 - `POST /api/analyze`
   - Accepts JPG/PNG poster upload
-  - Uses Gemini to detect brand and generate caption/hashtags
+  - Uses Groq vision model to detect brand and generate caption/hashtags
   - Uploads image to Cloudinary and returns `image_url` + generated copy
 
 - `POST /api/publish`
