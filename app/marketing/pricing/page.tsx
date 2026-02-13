@@ -18,7 +18,7 @@ function Card({ title, price, body, cta }: { title: string; price: string; body:
 export default function PricingPage() {
   return (
     <MarketingShell>
-      <section className="mx-auto max-w-6xl px-4 py-14">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
         <h1 className="text-4xl font-black tracking-tight">Pricing</h1>
         <p className="mt-3 max-w-2xl text-slate-700">
           Simple outlet-based pricing. Channels vary by outlet, so we price primarily on locations and add channels as needed.

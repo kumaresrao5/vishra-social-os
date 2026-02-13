@@ -20,6 +20,26 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
+function SectionHead({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="grid gap-3 lg:grid-cols-12 lg:items-end">
+      <div className="lg:col-span-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.26em] text-emerald-700/80">{eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{title}</h2>
+      </div>
+      <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7 lg:pl-6">{body}</p>
+    </div>
+  );
+}
+
 function BentoCard({
   title,
   body,
@@ -143,21 +163,21 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 export default function MarketingHome() {
   return (
     <MarketingShell>
-      <section className="mx-auto max-w-6xl px-4 pb-14 pt-10 sm:pt-12">
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-12">
-          <div>
+      <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:pb-16 sm:pt-14">
+        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-5 lg:pt-4">
             <Pill>
               <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
               Internal ops, product-ready later
             </Pill>
 
-            <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-              The posting system for multi-outlet teams that can not afford mistakes.
+            <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+              Posting ops for multi-outlet teams that can not afford mistakes.
             </h1>
 
             <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-700">
-              Flext turns event posters into outlet-fit captions, then publishes to Instagram with role-based control.
-              Queue, audit, retry, and let bar managers post safely without waiting for the agency manager.
+              Flext turns event posters into outlet-fit captions and publishes to Instagram with role-based control.
+              Batch, queue, audit, retry, and let outlet managers post safely without waiting.
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -175,7 +195,7 @@ export default function MarketingHome() {
               </Link>
             </div>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="mt-9 grid gap-3 sm:grid-cols-3">
               {[
                 { label: "Outlet control", value: "Role-gated" },
                 { label: "Posting speed", value: "Batch-first" },
@@ -189,24 +209,20 @@ export default function MarketingHome() {
             </div>
           </div>
 
-          <div className="lg:pt-4">
+          <div className="lg:col-span-7">
             <MiniMock />
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-black tracking-tight sm:text-3xl">Built for agency reality</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-              Not another creator tool. Flext is designed around outlets, teams, and the boring-but-critical controls that
-              prevent wrong-page posting.
-            </p>
-          </div>
-        </div>
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
+        <SectionHead
+          eyebrow="Designed for teams"
+          title="Built for agency reality"
+          body="Not another creator tool. Flext is designed around outlets, roles, and the boring-but-critical controls that prevent wrong-page posting."
+        />
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
           <BentoCard
             tone="mint"
             icon={<BadgeCheck className="h-5 w-5" />}
@@ -231,95 +247,102 @@ export default function MarketingHome() {
           />
         </div>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          <div className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm lg:col-span-2">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-              <Boxes className="h-4 w-4 text-emerald-700" /> Workflow: agency + bar managers
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Agency managers can publish across all outlets. Bar managers are tied to their outlet and can post immediately
-              without waiting.
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {[
-                { who: "Agency manager", lines: ["Batch posts across outlets", "Fix drafts fast", "Audit + retry failures"] },
-                { who: "Bar manager", lines: ["Upload poster", "Generate caption", "Publish to their outlet only"] },
-              ].map((x) => (
-                <div key={x.who} className="rounded-2xl border border-black/10 bg-slate-50 p-5">
-                  <div className="text-sm font-black tracking-tight text-slate-950">{x.who}</div>
-                  <ul className="mt-3 space-y-2 text-sm text-slate-700">
-                    {x.lines.map((t) => (
-                      <li key={t} className="flex gap-2">
-                        <Check className="mt-0.5 h-4 w-4 text-emerald-700" />
-                        <span>{t}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+        <div className="mt-12 grid gap-4 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <div className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm">
+              <div className="flex items-center gap-2 text-sm font-black text-slate-900">
+                <Boxes className="h-4 w-4 text-emerald-700" /> Personas and workflows
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                Flext is designed around two real users and two real flows. The UI stays fast because it stays opinionated.
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {[
+                  {
+                    who: "Agency manager",
+                    lines: ["Batch posts across outlets", "Fix drafts fast", "Audit + retry failures"],
+                  },
+                  {
+                    who: "Outlet manager",
+                    lines: ["Upload poster", "Generate caption", "Publish to their outlet only"],
+                  },
+                ].map((x) => (
+                  <div key={x.who} className="rounded-2xl border border-black/10 bg-slate-50 p-5">
+                    <div className="text-sm font-black tracking-tight text-slate-950">{x.who}</div>
+                    <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                      {x.lines.map((t) => (
+                        <li key={t} className="flex gap-2">
+                          <Check className="mt-0.5 h-4 w-4 text-emerald-700" />
+                          <span>{t}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-              <Shield className="h-4 w-4 text-sky-700" /> Channels roadmap
+          <div className="lg:col-span-5">
+            <div className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm">
+              <div className="flex items-center gap-2 text-sm font-black text-slate-900">
+                <Shield className="h-4 w-4 text-sky-700" /> Channels roadmap
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                Instagram is live. Add channels as you productize.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-slate-700">
+                {[
+                  "Instagram feed + stories (live)",
+                  "Facebook Pages per outlet (next)",
+                  "TikTok (OAuth + video conversion)",
+                  "X (OAuth + posting)",
+                  "Threads (API availability dependent)",
+                ].map((t) => (
+                  <li key={t} className="rounded-2xl border border-black/10 bg-slate-50 px-4 py-2">
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Instagram is live. Add channels as you productize.
-            </p>
-            <ul className="mt-4 space-y-2 text-sm text-slate-700">
-              {[
-                "Instagram feed + stories (live)",
-                "Facebook Pages per outlet (next)",
-                "TikTok (OAuth + video conversion)",
-                "X (OAuth + posting)",
-                "Threads (API availability dependent)",
-              ].map((t) => (
-                <li key={t} className="rounded-2xl border border-black/10 bg-slate-50 px-4 py-2">
-                  {t}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="rounded-[28px] border border-black/10 bg-slate-950 p-8 text-white shadow-sm sm:p-10">
-          <div className="grid gap-6 md:grid-cols-2 md:items-center">
-            <div>
-              <h3 className="text-2xl font-black tracking-tight sm:text-3xl">Ready to see it running?</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-200">
-                Open the live app, upload a poster, and publish. If you want a demo video embedded here later, send a Loom link.
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:pb-20">
+        <div className="rounded-[28px] border border-black/10 bg-white p-8 shadow-sm sm:p-10">
+          <div className="grid gap-6 md:grid-cols-12 md:items-center">
+            <div className="md:col-span-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-sky-700/80">60-second evaluation</p>
+              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Try it with one poster</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                Open the app, upload a poster, generate a draft, and publish. If you want a demo video here later, send a Loom link and we will embed it.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
+            <div className="flex flex-col gap-3 md:col-span-5 md:items-end">
               <a
                 href="https://ai.scalex.my"
-                className="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-950"
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 transition md:w-auto"
               >
                 Open app <ArrowRight className="ml-2 h-4 w-4" />
               </a>
               <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white"
+                href="/features"
+                className="inline-flex w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 transition md:w-auto"
               >
-                Pricing
+                See features
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-20">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-black tracking-tight sm:text-3xl">FAQ</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">
-              The questions agencies and outlet managers ask before using it daily.
-            </p>
-          </div>
-        </div>
+      <section className="mx-auto max-w-7xl px-4 pb-20">
+        <SectionHead
+          eyebrow="FAQ"
+          title="Questions before you ship it to your team"
+          body="Short answers to the things agencies and outlet managers ask before they use it daily."
+        />
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <FAQItem
             q="Can bar managers publish without waiting for the agency manager?"
@@ -342,4 +365,3 @@ export default function MarketingHome() {
     </MarketingShell>
   );
 }
-

@@ -4,7 +4,7 @@ import MarketingShell from "@/components/marketing/marketing-shell";
 export default function SecurityPage() {
   return (
     <MarketingShell>
-      <section className="mx-auto max-w-6xl px-4 py-14">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
         <h1 className="text-4xl font-black tracking-tight">Security</h1>
         <p className="mt-3 max-w-2xl text-slate-700">
           Built for internal control now, with a clear path to enterprise requirements later.
@@ -39,7 +39,7 @@ export default function SecurityPage() {
 
         <div className="mt-10 rounded-3xl border border-black/10 bg-white/70 p-8 shadow-sm">
           <h2 className="text-2xl font-black tracking-tight">Recommended when selling</h2>
-          <ul className="mt-4 grid gap-3 text-sm text-slate-300 md:grid-cols-2">
+          <ul className="mt-4 grid gap-3 text-sm text-slate-700 md:grid-cols-2">
             {[
               "SSO (SAML/OIDC) and enforced MFA",
               "Per-customer OAuth connections (no shared tokens)",

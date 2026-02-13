@@ -13,7 +13,7 @@ function Item({ title, body }: { title: string; body: string }) {
 export default function FeaturesPage() {
   return (
     <MarketingShell>
-      <section className="mx-auto max-w-6xl px-4 py-14">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
         <h1 className="text-4xl font-black tracking-tight">Features</h1>
         <p className="mt-3 max-w-2xl text-slate-700">
           Built for teams managing multiple outlets and high-frequency event promos.
@@ -64,7 +64,7 @@ export default function FeaturesPage() {
                 "SSO and SCIM provisioning",
               ].map((text) => (
                 <li key={text} className="flex gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-300" />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-700" />
                   <span>{text}</span>
                 </li>
               ))}
