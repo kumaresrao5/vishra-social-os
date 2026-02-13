@@ -1,3 +1,5 @@
+import { Redis } from "@upstash/redis";
+
 export type UserRole = "agency_manager" | "bar_manager";
 
 export type TeamUser = {
@@ -36,17 +38,22 @@ function hasRedisConfig(): boolean {
   return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
 }
 
-async function redisRequest(path: string, body?: unknown): Promise<Response> {
-  const url = `${process.env.UPSTASH_REDIS_REST_URL}${path}`;
-  return await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
+let redisClient: Redis | null = null;
+
+function getRedisClient(): Redis {
+  if (!redisClient) {
+    redisClient = Redis.fromEnv();
+  }
+  return redisClient;
+}
+
+function sanitizeUsers(users: TeamUser[]): TeamUser[] {
+  return users.map((u) => ({
+    username: u.username.trim().toLowerCase(),
+    password: String(u.password),
+    role: u.role,
+    brands: Array.isArray(u.brands) ? u.brands.map(normalizeBrand) : [],
+  }));
 }
 
 export async function getTeamUsers(): Promise<TeamUser[]> {
@@ -55,21 +62,16 @@ export async function getTeamUsers(): Promise<TeamUser[]> {
   }
 
   try {
-    const response = await redisRequest(`/get/${REDIS_USERS_KEY}`);
-    const payload = (await response.json()) as { result: TeamUser[] | null };
-    if (!response.ok || !payload.result) {
+    const redis = getRedisClient();
+    const users = await redis.get<TeamUser[] | null>(REDIS_USERS_KEY);
+    if (!users) {
       const fallback = parseEnvUsers();
       if (fallback.length > 0) {
         await saveTeamUsers(fallback);
       }
       return fallback;
     }
-    return payload.result.map((u) => ({
-      username: u.username.trim().toLowerCase(),
-      password: String(u.password),
-      role: u.role,
-      brands: Array.isArray(u.brands) ? u.brands.map(normalizeBrand) : [],
-    }));
+    return sanitizeUsers(users);
   } catch {
     return parseEnvUsers();
   }
@@ -79,16 +81,9 @@ export async function saveTeamUsers(users: TeamUser[]): Promise<void> {
   if (!hasRedisConfig()) {
     throw new Error("User storage is read-only. Configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.");
   }
-  const sanitized = users.map((u) => ({
-    username: u.username.trim().toLowerCase(),
-    password: String(u.password),
-    role: u.role,
-    brands: Array.isArray(u.brands) ? u.brands.map(normalizeBrand) : [],
-  }));
-  const response = await redisRequest(`/set/${REDIS_USERS_KEY}`, sanitized);
-  if (!response.ok) {
-    throw new Error("Failed to save users.");
-  }
+  const redis = getRedisClient();
+  const sanitized = sanitizeUsers(users);
+  await redis.set(REDIS_USERS_KEY, sanitized);
 }
 
 export async function authenticateUser(username: string, password: string): Promise<TeamUser | null> {
