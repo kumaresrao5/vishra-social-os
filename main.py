@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Optional
 
 import httpx
-from anthropic import Anthropic
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,8 +15,8 @@ from pydantic import BaseModel, Field
 
 load_dotenv()
 
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 META_ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN", "")
 INSTAGRAM_BUSINESS_ACCOUNT_ID = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", "")
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").rstrip("/")
@@ -74,12 +73,6 @@ class PublishResponse(BaseModel):
     detail: str
 
 
-def _get_anthropic_client() -> Anthropic:
-    if not ANTHROPIC_API_KEY:
-        raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY is not configured.")
-    return Anthropic(api_key=ANTHROPIC_API_KEY)
-
-
 def _extract_json_object(raw_text: str) -> dict:
     raw_text = raw_text.strip()
     try:
@@ -88,11 +81,11 @@ def _extract_json_object(raw_text: str) -> dict:
         start = raw_text.find("{")
         end = raw_text.rfind("}")
         if start == -1 or end == -1 or end <= start:
-            raise HTTPException(status_code=500, detail="Claude response did not contain valid JSON.")
+            raise HTTPException(status_code=500, detail="Model response did not contain valid JSON.")
         try:
             return json.loads(raw_text[start : end + 1])
         except json.JSONDecodeError as exc:
-            raise HTTPException(status_code=500, detail=f"Failed to parse Claude JSON output: {exc}") from exc
+            raise HTTPException(status_code=500, detail=f"Failed to parse model JSON output: {exc}") from exc
 
 
 def _build_image_url(request: Request, filename: str) -> str:
@@ -156,38 +149,49 @@ async def analyze_poster(request: Request, file: UploadFile = File(...)) -> Anal
     file_bytes = await file.read()
     file_path.write_bytes(file_bytes)
 
-    client = _get_anthropic_client()
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured.")
     b64_image = base64.b64encode(file_bytes).decode("utf-8")
 
     try:
-        message = client.messages.create(
-            model=ANTHROPIC_MODEL,
-            max_tokens=800,
-            system=SYSTEM_PROMPT,
-            messages=[
+        payload = {
+            "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+            "contents": [
                 {
-                    "role": "user",
-                    "content": [
+                    "parts": [
                         {
-                            "type": "image",
-                            "source": {"type": "base64", "media_type": file.content_type, "data": b64_image},
-                        },
-                        {
-                            "type": "text",
                             "text": (
                                 "Return only a strict JSON object with keys: brand, caption, hashtags, is_urgent. "
                                 "hashtags must be an array of exactly 10 hashtag strings."
-                            ),
+                            )
                         },
-                    ],
+                        {"inline_data": {"mime_type": file.content_type, "data": b64_image}},
+                    ]
                 }
             ],
+            "generationConfig": {"temperature": 0.4, "maxOutputTokens": 800},
+        }
+        url = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
         )
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            resp = await client.post(url, json=payload)
+            resp_json = resp.json()
+            if resp.status_code >= 400:
+                message = resp_json.get("error", {}).get("message", "Gemini API error.")
+                raise HTTPException(status_code=502, detail=f"Gemini API call failed: {message}")
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"Anthropic API call failed: {exc}") from exc
+        if isinstance(exc, HTTPException):
+            raise exc
+        raise HTTPException(status_code=502, detail=f"Gemini API call failed: {exc}") from exc
 
+    candidates = resp_json.get("candidates", [])
     response_text = "".join(
-        block.text for block in message.content if getattr(block, "type", None) == "text" and getattr(block, "text", None)
+        part.get("text", "")
+        for candidate in candidates
+        for part in candidate.get("content", {}).get("parts", [])
+        if isinstance(part, dict)
     )
     parsed = _extract_json_object(response_text)
 

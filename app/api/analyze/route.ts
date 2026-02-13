@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
 const SYSTEM_PROMPT = `You are the AI Social Media Manager for Vishra Holdings. You manage 3 brands:
@@ -13,7 +12,7 @@ Output a JSON object with:
 - hashtags: 10 relevant tags (include #BukitBintang).
 - is_urgent: Boolean (True if event is today/tomorrow).`;
 
-function parseClaudeJson(rawText: string): Record<string, unknown> {
+function parseModelJson(rawText: string): Record<string, unknown> {
   const trimmed = rawText.trim();
   try {
     return JSON.parse(trimmed);
@@ -21,7 +20,7 @@ function parseClaudeJson(rawText: string): Record<string, unknown> {
     const start = trimmed.indexOf("{");
     const end = trimmed.lastIndexOf("}");
     if (start === -1 || end === -1 || end <= start) {
-      throw new Error("Claude response did not contain valid JSON.");
+      throw new Error("Model response did not contain valid JSON.");
     }
     return JSON.parse(trimmed.slice(start, end + 1));
   }
@@ -54,9 +53,9 @@ async function uploadToCloudinary(file: File): Promise<string> {
 
 export async function POST(request: Request) {
   try {
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    if (!anthropicKey) {
-      return NextResponse.json({ detail: "ANTHROPIC_API_KEY is not configured." }, { status: 500 });
+    const geminiApiKey = process.env.GEMINI_API_KEY;
+    if (!geminiApiKey) {
+      return NextResponse.json({ detail: "GEMINI_API_KEY is not configured." }, { status: 500 });
     }
 
     const form = await request.formData();
@@ -72,35 +71,52 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const base64Data = Buffer.from(arrayBuffer).toString("base64");
 
-    const anthropic = new Anthropic({ apiKey: anthropicKey });
-    const message = await anthropic.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022",
-      max_tokens: 800,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: [
+    const geminiModel = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    const geminiResp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [
             {
-              type: "image",
-              source: { type: "base64", media_type: file.type as "image/jpeg" | "image/png", data: base64Data },
-            },
-            {
-              type: "text",
-              text:
-                "Return only strict JSON with keys: brand, caption, hashtags, is_urgent. " +
-                "hashtags must be an array of exactly 10 hashtag strings.",
+              parts: [
+                {
+                  text:
+                    "Return only strict JSON with keys: brand, caption, hashtags, is_urgent. " +
+                    "hashtags must be an array of exactly 10 hashtag strings.",
+                },
+                {
+                  inline_data: {
+                    mime_type: file.type,
+                    data: base64Data,
+                  },
+                },
+              ],
             },
           ],
-        },
-      ],
-    });
+          generationConfig: {
+            temperature: 0.4,
+            maxOutputTokens: 800,
+          },
+        }),
+      }
+    );
+    const geminiJson = (await geminiResp.json()) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      error?: { message?: string };
+    };
+    if (!geminiResp.ok) {
+      const msg = geminiJson.error?.message ?? "Gemini API call failed.";
+      return NextResponse.json({ detail: msg }, { status: 502 });
+    }
 
-    const responseText = message.content
-      .filter((block) => block.type === "text")
-      .map((block) => block.text)
+    const responseText = (geminiJson.candidates ?? [])
+      .flatMap((candidate) => candidate.content?.parts ?? [])
+      .map((part) => part.text ?? "")
       .join("");
-    const parsed = parseClaudeJson(responseText);
+    const parsed = parseModelJson(responseText);
 
     const brand = String(parsed.brand ?? "").trim() || "Unknown";
     const caption = String(parsed.caption ?? "").trim();
