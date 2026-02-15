@@ -25,25 +25,14 @@ function PrimaryButton({ href, children }: { href: string; children: React.React
   );
 }
 
-function SecondaryButton({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a
-      href={href}
-      className="inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-sm hover:bg-slate-50 transition"
-    >
-      {children}
-    </a>
-  );
-}
-
-function MetricRow() {
+function TrustBar() {
   const items = [
-    { icon: <Layers3 className="h-4 w-4" />, label: "ROLE-GATED" },
-    { icon: <Lock className="h-4 w-4" />, label: "SAFETY" },
-    { icon: <ClipboardCheck className="h-4 w-4" />, label: "BATCH + QUEUE" },
-    { icon: <Zap className="h-4 w-4" />, label: "SPEED" },
-    { icon: <Shield className="h-4 w-4" />, label: "AUDIT TRAIL" },
-    { icon: <Gauge className="h-4 w-4" />, label: "CLARITY" },
+    { icon: <Shield className="h-4 w-4" />, label: "META GRAPH API" },
+    { icon: <Layers3 className="h-4 w-4" />, label: "FEED + STORIES" },
+    { icon: <BadgeCheck className="h-4 w-4" />, label: "OUTLET PERMISSIONS" },
+    { icon: <ClipboardCheck className="h-4 w-4" />, label: "QUEUE + HISTORY" },
+    { icon: <Zap className="h-4 w-4" />, label: "FAST DRAFTS" },
+    { icon: <Gauge className="h-4 w-4" />, label: "OPS CLARITY" },
   ];
   return (
     <div className="mt-10 border-t border-black/10">
@@ -58,6 +47,50 @@ function MetricRow() {
         ))}
       </div>
     </div>
+  );
+}
+
+function Problem() {
+  const pains = [
+    {
+      title: "Wrong outlet, wrong account",
+      body: "A single mistake can damage trust. Teams need guardrails, not just a scheduler.",
+    },
+    {
+      title: "Drafts buried in WhatsApp groups",
+      body: "Approvals, edits, and files get lost. Nobody knows what posted, what failed, or what’s next.",
+    },
+    {
+      title: "High frequency, low consistency",
+      body: "Daily promos need speed. Captions drift, formatting breaks Stories, and ops gets messy.",
+    },
+  ];
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
+      <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div className="lg:col-span-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
+            The problem
+          </p>
+          <h2 className="font-display mt-4 text-2xl font-black leading-[1.06] tracking-[-0.02em] text-slate-950 sm:text-3xl">
+            Social posting breaks in operations, not creativity.
+          </h2>
+        </div>
+        <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7">
+          If you manage multiple outlets, the risks are operational: wrong account, messy approvals, and no reliable trail of
+          what happened.
+        </p>
+      </div>
+
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {pains.map((p) => (
+          <div key={p.title} className="rounded-[28px] border border-black/10 bg-white p-6 shadow-sm">
+            <p className="text-sm font-black tracking-tight text-slate-950">{p.title}</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -142,7 +175,7 @@ function DarkFeaturePanel() {
   );
 }
 
-function FeatureGrid() {
+function SolutionModules() {
   const items = [
     {
       title: "Outlet-safe controls",
@@ -170,13 +203,13 @@ function FeatureGrid() {
       <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
-            Core modules
+            The solution
           </p>
           <h2 className="font-display mt-4 text-2xl font-black leading-[1.06] tracking-[-0.02em] text-slate-950 sm:text-3xl">
-            A social OS your team can use daily.
+            A social OS your team can actually run.
           </h2>
         </div>
-        <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7 lg:pl-6">
+        <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7">
           Minimal interface. High control. Built for fast posting across multiple outlets without mistakes.
         </p>
       </div>
@@ -196,36 +229,134 @@ function FeatureGrid() {
   );
 }
 
-function Roadmap() {
-  const rows = [
-    { label: "Instagram feed + stories", badge: "LIVE" },
-    { label: "Facebook pages per outlet", badge: "NEXT" },
-    { label: "TikTok", badge: "TBD" },
-    { label: "X & Threads", badge: "PLANNED" },
+function Portfolio() {
+  const samples = [
+    {
+      outlet: "Barley & Hops",
+      hook: "Saturday night takeover. 10PM onwards.",
+      caption: "Get ready for tonight. DJ set, deals, and a packed floor from 10PM. Bring the crew.",
+      tags: ["#BukitBintang", "#KualaLumpur", "#SaturdayNight", "#PubLife"],
+    },
+    {
+      outlet: "Fire & Ice",
+      hook: "Match night + big screens.",
+      caption: "Game on. Big screens, cold drinks, loud crowd. Bring your jersey and let’s run it.",
+      tags: ["#SportsBar", "#MatchDay", "#BukitBintang", "#Cheers"],
+    },
+    {
+      outlet: "Dravidian",
+      hook: "Upscale late night event.",
+      caption: "A night of sound and style. Dress sharp, arrive early, and stay late.",
+      tags: ["#Nightlife", "#BukitBintang", "#KL", "#AfterDark"],
+    },
+  ];
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 pb-14 sm:pb-20">
+      <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div className="lg:col-span-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
+            Portfolio
+          </p>
+          <h2 className="font-display mt-4 text-2xl font-black leading-[1.06] tracking-[-0.02em] text-slate-950 sm:text-3xl">
+            Show, don’t tell.
+          </h2>
+        </div>
+        <p className="text-sm leading-relaxed text-slate-600 lg:col-span-7">
+          Examples of outlet-fit drafts Flext can generate from posters. Replace these with real screenshots and results as you scale.
+        </p>
+      </div>
+
+      <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        {samples.map((s) => (
+          <div key={s.outlet} className="overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-sm">
+            <div className="border-b border-black/10 px-6 py-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
+                Outlet
+              </p>
+              <p className="mt-2 text-sm font-black tracking-tight text-slate-950">{s.outlet}</p>
+              <p className="mt-2 text-sm text-slate-600">{s.hook}</p>
+            </div>
+            <div className="px-6 py-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-500">Draft caption</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-700">{s.caption}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {s.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-black/10 bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-700"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Testimonials() {
+  const quotes = [
+    { who: "Agency manager", quote: "We stopped double-checking accounts. Outlet permissions removed the biggest posting risk." },
+    { who: "Outlet manager", quote: "No waiting in group chat. Upload the poster, get the caption, post it. Done." },
+    { who: "Ops lead", quote: "Queue + history finally makes posting accountable. We can see what happened and retry fast." },
+  ];
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 pb-14 sm:pb-20">
+      <div className="text-center">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
+          Testimonials
+        </p>
+        <h2 className="font-display mt-4 text-2xl font-black tracking-[-0.02em] text-slate-950 sm:text-3xl">
+          Built for real teams.
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-600">
+          Add real client quotes here as you productize. The layout is ready.
+        </p>
+      </div>
+
+      <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        {quotes.map((q) => (
+          <div key={q.who} className="rounded-[28px] border border-black/10 bg-white p-6 shadow-sm">
+            <p className="text-sm leading-relaxed text-slate-700">“{q.quote}”</p>
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-500">{q.who}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Process() {
+  const steps = [
+    { title: "Upload", body: "Drop a poster. Flext reads it and detects the outlet." },
+    { title: "Generate", body: "Get caption + hashtags (and story-safe formatting). Edit if needed." },
+    { title: "Publish", body: "Post feed, story, or both. Everything is recorded with IDs and retry." },
   ];
   return (
     <section className="mx-auto max-w-6xl px-4 pb-14 sm:pb-20">
-      <h3 className="text-center text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Channels roadmap</h3>
-      <div className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-sm">
-        {rows.map((r, idx) => (
-          <div
-            key={r.label}
-            className={[
-              "flex items-center justify-between gap-4 px-5 py-4",
-              idx !== 0 ? "border-t border-black/10" : "",
-            ].join(" ")}
-          >
-            <p className="text-sm font-semibold text-slate-900">{r.label}</p>
-            <span
-              className="rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.26em]"
-              style={{
-                background: r.badge === "LIVE" ? "#EAF2FF" : "#F4F4F5",
-                color: r.badge === "LIVE" ? ACCENT : "#111827",
-                border: "1px solid rgba(2,6,23,0.08)",
-              }}
-            >
-              {r.badge}
-            </span>
+      <div className="text-center">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
+          Process
+        </p>
+        <h2 className="font-display mt-4 text-2xl font-black tracking-[-0.02em] text-slate-950 sm:text-3xl">
+          How it works in 3 steps.
+        </h2>
+      </div>
+      <div className="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-3">
+        {steps.map((s, idx) => (
+          <div key={s.title} className="rounded-[28px] border border-black/10 bg-white p-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.26em] text-slate-700">
+              <span className="grid h-5 w-5 place-items-center rounded-full text-white" style={{ background: ACCENT }}>
+                {idx + 1}
+              </span>
+              {s.title}
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-slate-600">{s.body}</p>
           </div>
         ))}
       </div>
@@ -274,7 +405,10 @@ function CTA() {
   return (
     <section className="bg-[#155EEF]">
       <div className="mx-auto max-w-6xl px-4 py-16 text-center text-white">
-        <h3 className="font-display text-3xl font-black tracking-[-0.02em] sm:text-4xl">Try it with one poster</h3>
+        <h3 className="font-display text-3xl font-black tracking-[-0.02em] sm:text-4xl">Try it with one poster today</h3>
+        <p className="mx-auto mt-3 max-w-xl text-sm text-white/80">
+          Open the app, upload a poster, and get a publish-ready draft in minutes.
+        </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href="https://ai.scalex.my"
@@ -282,13 +416,10 @@ function CTA() {
           >
             Open app <ArrowRight className="ml-2 h-4 w-4" />
           </a>
-          <Link
-            href="/features"
-            className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/15 transition"
-          >
-            See features
-          </Link>
         </div>
+        <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-white/70">
+          Limited time: onboard your outlets and roles this week
+        </p>
       </div>
     </section>
   );
@@ -297,6 +428,7 @@ function CTA() {
 export default function MarketingHome() {
   return (
     <MarketingShell>
+      {/* 1) Hero (clear promise + one CTA) */}
       <section className="mx-auto max-w-6xl px-4 pb-8 pt-14 text-center sm:pb-10">
         <p className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: ACCENT }}>
           Built for agencies and outlet teams
@@ -319,17 +451,38 @@ export default function MarketingHome() {
           <PrimaryButton href="https://ai.scalex.my">
             Open app <ArrowRight className="ml-2 h-4 w-4" />
           </PrimaryButton>
-          <SecondaryButton href="/features">See how it works</SecondaryButton>
+        </div>
+        <div className="mt-4 text-[11px] text-slate-600">
+          <Link href="/pricing" className="font-semibold text-slate-950 hover:underline">See pricing</Link>
+          <span className="mx-2 text-slate-300">•</span>
+          <Link href="/security" className="font-semibold text-slate-950 hover:underline">Security</Link>
         </div>
       </section>
 
-      <MetricRow />
+      {/* 2) Trust bar (proof) */}
+      <TrustBar />
+
+      {/* 3) Problem */}
+      <Problem />
+
+      {/* 4) Solution */}
       <DarkFeaturePanel />
-      <FeatureGrid />
-      <Roadmap />
+      <SolutionModules />
+
+      {/* 5) Portfolio */}
+      <Portfolio />
+
+      {/* 6) Testimonials */}
+      <Testimonials />
+
+      {/* 7) Process */}
+      <Process />
+
+      {/* 8) FAQ */}
       <FAQ />
+
+      {/* 9) Final CTA */}
       <CTA />
     </MarketingShell>
   );
 }
-
