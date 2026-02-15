@@ -184,12 +184,12 @@ function Stepper({
   ];
   return (
     <SoftCard className="p-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-between sm:gap-3">
         {steps.map((s, idx) => {
           const done = step > s.id;
           const active = step === s.id;
           return (
-            <div key={s.id} className="flex flex-1 items-center gap-3">
+            <div key={s.id} className="flex items-center gap-3 sm:flex-1">
               <div
                 className={cn(
                   "grid h-9 w-9 shrink-0 place-items-center rounded-2xl border text-sm font-black",
@@ -935,7 +935,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 <p className="text-xs text-slate-600">{user.username} • {user.role.replace("_", " ")}</p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-end gap-2">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
                 <div className="hidden items-center gap-2 rounded-2xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm md:flex">
                   <Search className="h-4 w-4 text-slate-500" />
                   <input
@@ -955,24 +955,27 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                     <option key={brand} value={brand}>{brand}</option>
                   ))}
                 </select>
-                <button
-                  type="button"
-                  onClick={() => setSection("create")}
-                  className="hidden items-center justify-center rounded-2xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 md:inline-flex"
-                >
-                  New <ArrowRight className="ml-2 h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen((v) => !v)}
-                  className="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold shadow-sm lg:hidden"
-                  aria-label="Open navigation"
-                >
-                  <PanelLeft className="h-4 w-4 text-slate-700" />
-                </button>
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-black/10 bg-white shadow-sm">
-                  <Bell className="h-4 w-4 text-slate-600" />
-                </span>
+
+                <div className="flex items-center justify-between gap-2 sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setSection("create")}
+                    className="hidden items-center justify-center rounded-2xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 md:inline-flex"
+                  >
+                    New <ArrowRight className="ml-2 h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSidebarOpen((v) => !v)}
+                    className="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold shadow-sm lg:hidden"
+                    aria-label="Open navigation"
+                  >
+                    <PanelLeft className="h-4 w-4 text-slate-700" />
+                  </button>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-black/10 bg-white shadow-sm">
+                    <Bell className="h-4 w-4 text-slate-600" />
+                  </span>
+                </div>
               </div>
             </div>
           </header>
