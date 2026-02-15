@@ -1278,7 +1278,11 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.15fr_1fr]">
                   <SoftCard className="p-4">
                     {activePreviewUrl ? (
-                      <img src={activePreviewUrl} alt="Preview" className="mx-auto max-h-[52vh] rounded-2xl object-contain sm:max-h-[520px]" />
+                      <img
+                        src={activePreviewUrl}
+                        alt="Preview"
+                        className="mx-auto w-full max-w-full max-h-[52vh] rounded-2xl object-contain sm:max-h-[520px]"
+                      />
                     ) : (
                       <div className="grid min-h-[14rem] place-items-center rounded-2xl border border-black/10 bg-slate-50 text-slate-500 sm:min-h-80">
                         Poster preview
@@ -1724,7 +1728,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
             <div className="mt-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Caption</p>
-              <div className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-3xl border border-black/10 bg-white p-4 text-sm text-slate-800 shadow-sm">
+              <div className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-3xl border border-black/10 bg-white p-4 text-sm text-slate-800 shadow-sm">
                 {selectedRecord.caption}
               </div>
             </div>
