@@ -74,6 +74,7 @@ type Toast = {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 const BRAND_OPTIONS = ["Dravidian", "Fire & Ice", "Barley & Hops", "Scorebar", "Southern Spice"];
+const ACCENT = "var(--accent)";
 
 function cn(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
@@ -90,16 +91,16 @@ function FlextLogo() {
   return (
     <div className="leading-none">
       <p className="font-display text-xl font-black tracking-tight text-slate-950">
-        Flext<span className="text-emerald-700">.</span>
+        Flext<span style={{ color: ACCENT }}>.</span>
       </p>
-      <p className="text-[10px] uppercase tracking-[0.34em] text-slate-600">Social OS</p>
+      <p className="text-[10px] uppercase tracking-[0.34em] text-slate-500">Social OS</p>
     </div>
   );
 }
 
 function SoftCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-[28px] border border-black/10 bg-white/80 shadow-sm backdrop-blur", className)}>
+    <div className={cn("rounded-2xl border border-black/10 bg-white shadow-[0_1px_0_rgba(2,6,23,0.06)]", className)}>
       {children}
     </div>
   );
@@ -130,7 +131,7 @@ function Sparkline({ points }: { points: number[] }) {
     })
     .join(" ");
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="text-sky-600">
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ color: ACCENT }}>
       <path d={d} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
       <path d={`M 0 ${h - pad} L ${w} ${h - pad}`} fill="none" stroke="rgba(2,6,23,0.08)" strokeWidth="1" />
     </svg>
@@ -139,8 +140,8 @@ function Sparkline({ points }: { points: number[] }) {
 
 function StatusBadge({ status }: { status: PublishRecord["status"] }) {
   const map = {
-    queued: "bg-amber-50 text-amber-800 border-amber-300/60",
-    published: "bg-emerald-50 text-emerald-800 border-emerald-300/60",
+    queued: "bg-slate-50 text-slate-800 border-black/10",
+    published: "bg-blue-50 text-blue-800 border-blue-300/60",
     failed: "bg-rose-50 text-rose-800 border-rose-300/60",
   };
   return (
@@ -159,8 +160,9 @@ function PublishTargetSwitch({ value, onChange }: { value: PublishTarget; onChan
           onClick={() => onChange(option)}
           className={cn(
             "rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition",
-            value === option ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-50"
+            value === option ? "text-white" : "text-slate-600 hover:bg-slate-50"
           )}
+          style={value === option ? { background: ACCENT } : undefined}
         >
           {option}
         </button>
@@ -191,10 +193,11 @@ function Stepper({
               <div
                 className={cn(
                   "grid h-9 w-9 shrink-0 place-items-center rounded-2xl border text-sm font-black",
-                  done && "border-emerald-300/70 bg-emerald-50 text-emerald-800",
-                  active && "border-slate-950 bg-slate-950 text-white",
+                  done && "border-blue-300/70 bg-blue-50 text-blue-800",
+                  active && "text-white",
                   !done && !active && "border-black/10 bg-white text-slate-700"
                 )}
+                style={active ? { background: ACCENT, borderColor: "rgba(2,6,23,0.20)" } : undefined}
               >
                 {done ? <CheckCircle2 className="h-5 w-5" /> : s.id}
               </div>
@@ -203,7 +206,7 @@ function Stepper({
                 <p className="truncate text-sm font-semibold text-slate-900">{s.label}</p>
               </div>
               {idx < steps.length - 1 ? (
-                <div className={cn("mx-2 hidden h-px flex-1 sm:block", done ? "bg-emerald-300/60" : "bg-black/10")} />
+                <div className={cn("mx-2 hidden h-px flex-1 sm:block", done ? "bg-blue-300/60" : "bg-black/10")} />
               ) : null}
             </div>
           );
@@ -772,10 +775,15 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
   if (!user) {
     return (
       <main className="grid min-h-screen place-items-center px-6 text-slate-900">
-        <form onSubmit={onLoginSubmit} className="w-full max-w-md rounded-3xl border border-black/10 bg-white/80 p-6 shadow-sm backdrop-blur">
+        <form
+          onSubmit={onLoginSubmit}
+          className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-6 shadow-[0_1px_0_rgba(2,6,23,0.06)]"
+        >
           <FlextLogo />
-          <p className="mt-2 text-xs uppercase tracking-[0.2em] text-emerald-700">Internal access</p>
-          <h1 className="mt-3 text-2xl font-black tracking-tight">Team Login</h1>
+          <p className="mt-2 text-xs uppercase tracking-[0.24em]" style={{ color: ACCENT }}>
+            Internal access
+          </p>
+          <h1 className="mt-3 font-display text-2xl font-black tracking-tight">Team Login</h1>
           <p className="mb-5 mt-1 text-sm text-slate-600">Use your username credentials to manage outlet publishing.</p>
 
           <label className="mb-1 block text-sm font-semibold text-slate-700">Username</label>
@@ -797,7 +805,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           <button
             type="submit"
             disabled={isLoginLoading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-slate-900 disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 disabled:opacity-60"
+            style={{ background: ACCENT }}
           >
             {isLoginLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {isLoginLoading ? "Signing in..." : "Sign in"}
@@ -819,7 +828,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
               onClick={() => setSidebarOpen(false)}
               aria-label="Close navigation"
             />
-            <div className="absolute left-0 top-0 h-full w-80 border-r border-black/10 bg-white/90 p-5 shadow-2xl backdrop-blur">
+            <div className="absolute left-0 top-0 h-full w-80 border-r border-black/10 bg-white p-5 shadow-2xl">
               <FlextLogo />
               <p className="mt-3 text-xs text-slate-600">AI publishing command center</p>
               <nav className="mt-8 space-y-1">
@@ -836,8 +845,9 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       }}
                       className={cn(
                         "flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold transition",
-                        active ? "bg-sky-500/10 text-sky-900" : "text-slate-700 hover:bg-slate-50"
+                        active ? "text-slate-950" : "text-slate-700 hover:bg-slate-50"
                       )}
+                      style={active ? { background: "rgba(21, 94, 239, 0.10)" } : undefined}
                     >
                       <Icon className="h-4 w-4" />
                       {item.label}
@@ -853,7 +863,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                     setSection("create");
                     setSidebarOpen(false);
                   }}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-900"
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95"
+                  style={{ background: ACCENT }}
                 >
                   <ImagePlus className="h-4 w-4" /> New post
                 </button>
@@ -869,7 +880,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           </div>
         ) : null}
 
-        <aside className="hidden w-72 shrink-0 border-r border-black/10 bg-white/70 p-5 lg:flex lg:flex-col backdrop-blur">
+        <aside className="hidden w-72 shrink-0 border-r border-black/10 bg-white p-5 lg:flex lg:flex-col">
           <FlextLogo />
           <p className="mt-3 text-xs text-slate-600">AI publishing command center</p>
 
@@ -884,8 +895,9 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   onClick={() => setSection(item.id)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold transition",
-                    active ? "bg-sky-500/10 text-sky-900" : "text-slate-700 hover:bg-slate-50"
+                    active ? "text-slate-950" : "text-slate-700 hover:bg-slate-50"
                   )}
+                  style={active ? { background: "rgba(21, 94, 239, 0.10)" } : undefined}
                 >
                   <Icon className="h-4 w-4" />
                   {item.label}
@@ -899,7 +911,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             <button
               type="button"
               onClick={() => setSection("create")}
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-900"
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95"
+              style={{ background: ACCENT }}
             >
               <ImagePlus className="h-4 w-4" /> New post
             </button>
@@ -915,7 +928,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
         </aside>
 
         <main className="flex-1 pb-20 lg:pb-6">
-          <header className="sticky top-0 z-30 border-b border-black/10 bg-white/75 px-4 py-3 backdrop-blur lg:px-8">
+          <header className="sticky top-0 z-30 border-b border-black/10 bg-white px-4 py-3 lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h1 className="font-display text-lg font-black tracking-tight text-slate-950">Flext Social OS</h1>
@@ -1004,10 +1017,10 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   <SoftCard className="p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-black tracking-tight text-slate-950">Queue</p>
-                      <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">
-                        Refresh
-                      </button>
-                    </div>
+                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold" style={{ color: ACCENT }}>
+                    Refresh
+                  </button>
+                </div>
                     {/* Mobile-first: cards on small screens, table on larger screens */}
                     <div className="mt-4 grid gap-3 sm:hidden">
                       {filteredQueue.slice(0, 6).map((r) => (
@@ -1066,7 +1079,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                                 <button
                                   type="button"
                                   onClick={(e) => { e.stopPropagation(); void publishQueuedRecord(r.id); }}
-                                  className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-slate-900"
+                                  className="rounded-xl px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-95"
+                                  style={{ background: ACCENT }}
                                 >
                                   Publish
                                 </button>
@@ -1084,7 +1098,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   <SoftCard className="p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-black tracking-tight text-slate-950">Recent activity</p>
-                      <button type="button" onClick={() => setSection("history")} className="text-sm font-semibold text-sky-700 hover:text-sky-900">
+                      <button type="button" onClick={() => setSection("history")} className="text-sm font-semibold" style={{ color: ACCENT }}>
                         View all
                       </button>
                     </div>
@@ -1156,12 +1170,12 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   onDrop={onDrop}
                   className={cn(
                     "block cursor-pointer rounded-2xl border-2 border-dashed p-10 text-center transition",
-                    isDragging ? "border-sky-500 bg-sky-50" : "border-slate-300 bg-white/70"
+                    isDragging ? "border-blue-300 bg-blue-50" : "border-slate-300 bg-white"
                   )}
                 >
                   <input type="file" multiple accept="image/png,image/jpeg" onChange={onFileChange} className="hidden" />
                   <div className="mx-auto flex max-w-lg flex-col items-center gap-3">
-                    <Upload className="h-10 w-10 text-sky-600" />
+                    <Upload className="h-10 w-10" style={{ color: ACCENT }} />
                     <p className="text-lg font-semibold text-slate-900">Drop poster or click to browse</p>
                     <p className="text-sm text-slate-600">JPG/PNG up to your platform limit</p>
                   </div>
@@ -1192,7 +1206,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       <button
                         type="button"
                         onClick={() => setSection("history")}
-                        className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-900"
+                        className="inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95"
+                        style={{ background: ACCENT }}
                       >
                         View history <ArrowRight className="ml-2 h-4 w-4" />
                       </button>
@@ -1201,7 +1216,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 ) : null}
 
                 {selectedFiles.length > 1 ? (
-                  <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+                  <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <p className="text-sm font-semibold text-slate-900">{selectedFiles.length} posters selected</p>
@@ -1238,7 +1253,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                             >
                               <img src={url} alt={`Poster ${idx + 1}`} className="h-28 w-full object-cover" />
                               {carouselEnabled ? (
-                                <label className="absolute left-2 top-2 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-2 py-1 text-[11px] font-semibold text-slate-800">
+                                <label className="absolute left-2 top-2 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-2 py-1 text-[11px] font-semibold text-slate-800">
                                   <input
                                     type="checkbox"
                                     checked={selected}
@@ -1273,14 +1288,15 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   <SoftCard className="p-4">
                     <div className="flex items-center justify-between gap-2">
                       <h2 className="text-base font-semibold">Draft Editor</h2>
-                      {analysis?.brand ? <span className="rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-900">{analysis.brand}</span> : null}
+                      {analysis?.brand ? <span className="rounded-full border border-black/10 bg-white px-2.5 py-1 text-xs font-semibold text-slate-900">{analysis.brand}</span> : null}
                     </div>
 
                     <button
                       type="button"
                       onClick={analyzePoster}
                       disabled={selectedFiles.length === 0 || isAnalyzing}
-                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-slate-900 disabled:opacity-60"
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 disabled:opacity-60"
+                      style={{ background: ACCENT }}
                     >
                       {isAnalyzing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                       {isAnalyzing ? "Generating..." : selectedFiles.length > 1 ? "Generate Captions" : "Generate Caption"}
@@ -1321,7 +1337,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={publishNow}
                         disabled={isPublishing || !analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 disabled:opacity-60"
+                        style={{ background: ACCENT }}
                       >
                         {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
                         Publish Now
@@ -1330,7 +1347,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={addToQueue}
                         disabled={!analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 font-semibold text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60"
                       >
                         <Clock3 className="h-4 w-4" /> Add to Queue
                       </button>
@@ -1341,10 +1358,10 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "queue" ? (
-              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+              <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Publishing Queue</h2>
-                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
+                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold" style={{ color: ACCENT }}>Refresh</button>
                 </div>
                 {isRecordsLoading ? (
                   <div className="space-y-2">
@@ -1379,7 +1396,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                                 e.stopPropagation();
                                 void publishQueuedRecord(record.id);
                               }}
-                              className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-3 py-2 text-xs font-semibold text-white shadow-sm"
+                              className="inline-flex items-center justify-center rounded-2xl px-3 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-95"
+                              style={{ background: ACCENT }}
                             >
                               Publish
                             </button>
@@ -1407,7 +1425,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); void publishQueuedRecord(record.id); }}
-                                className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-slate-900"
+                                className="rounded-xl px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-95"
+                                style={{ background: ACCENT }}
                               >
                                 Publish
                               </button>
@@ -1423,10 +1442,10 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "history" ? (
-              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+              <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-lg font-semibold">Publish History</h2>
-                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
+                  <button type="button" onClick={() => void loadRecords()} className="text-sm font-semibold" style={{ color: ACCENT }}>Refresh</button>
                 </div>
                 {isRecordsLoading ? (
                   <div className="space-y-2">
@@ -1492,7 +1511,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                                   Retry
                                 </button>
                               ) : (
-                                <CheckCircle2 className="h-4 w-4 text-emerald-700" />
+                                  <CheckCircle2 className="h-4 w-4 text-blue-700" />
                               )}
                             </td>
                           </tr>
@@ -1506,7 +1525,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             ) : null}
 
             {section === "assets" ? (
-              <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+              <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                 <h2 className="mb-3 text-lg font-semibold">Assets Library</h2>
                 {recentAssets.length === 0 ? (
                   <p className="text-sm text-slate-600">No assets yet. Upload and publish to build your internal library.</p>
@@ -1532,10 +1551,10 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   Only agency managers can access user administration.
                 </section>
               ) : (
-                <section className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+                <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                   <div className="mb-3 flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Admin Users</h2>
-                    <button type="button" onClick={() => void loadUsers()} className="text-sm font-semibold text-sky-700 hover:text-sky-900">Refresh</button>
+                    <button type="button" onClick={() => void loadUsers()} className="text-sm font-semibold" style={{ color: ACCENT }}>Refresh</button>
                   </div>
 
                   <div className="grid grid-cols-1 gap-2 rounded-2xl border border-black/10 bg-white p-3 shadow-sm md:grid-cols-2">
@@ -1546,7 +1565,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       <option value="bar_manager">Bar manager</option>
                     </select>
                     <input value={newBrands} onChange={(e) => setNewBrands(e.target.value)} placeholder="Brands (comma separated)" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
-                    <button type="button" onClick={createUser} className="rounded-xl bg-slate-950 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900">Save User</button>
+                    <button type="button" onClick={createUser} className="rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95" style={{ background: ACCENT }}>Save User</button>
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
@@ -1596,12 +1615,12 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
             {section === "settings" ? (
               <section className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+                <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                   <h2 className="text-lg font-semibold">Workspace Settings</h2>
                   <p className="mt-2 text-sm text-slate-600">Environment: Production</p>
                   <p className="text-sm text-slate-600">API Routes secured with session tokens.</p>
                 </div>
-                <div className="rounded-3xl border border-black/10 bg-white/75 p-4 shadow-sm backdrop-blur">
+                <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
                   <h2 className="text-lg font-semibold">Role Permissions</h2>
                   <p className="mt-2 text-sm text-slate-600">Agency managers can access all outlets and user administration.</p>
                   <p className="text-sm text-slate-600">Bar managers can publish only to assigned outlets.</p>
@@ -1612,12 +1631,18 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-black/10 bg-white/90 backdrop-blur lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-black/10 bg-white lg:hidden">
         {sideNavItems.slice(0, 6).map((item) => {
           const Icon = item.icon;
           const active = section === item.id;
           return (
-            <button key={item.id} type="button" onClick={() => setSection(item.id)} className={cn("flex flex-col items-center gap-1 py-2 text-[11px]", active ? "text-sky-800" : "text-slate-500") }>
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setSection(item.id)}
+              className={cn("flex flex-col items-center gap-1 py-2 text-[11px]", active ? "text-slate-950" : "text-slate-500")}
+              style={active ? { color: ACCENT } : undefined}
+            >
               <Icon className="h-4 w-4" />
               {item.label.split(" ")[0]}
             </button>
@@ -1671,7 +1696,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
               <button
                 type="button"
                 onClick={() => void publishQueuedRecord(selectedRecord.id)}
-                className="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-900"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95"
+                style={{ background: ACCENT }}
               >
                 Publish now <ArrowRight className="ml-2 h-4 w-4" />
               </button>
@@ -1686,9 +1712,9 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             key={toast.id}
             className={cn(
               "pointer-events-auto rounded-lg border px-3 py-2 text-sm shadow-xl",
-              toast.tone === "success" && "border-emerald-300/60 bg-emerald-50 text-emerald-900",
+              toast.tone === "success" && "border-blue-300/60 bg-blue-50 text-blue-900",
               toast.tone === "error" && "border-rose-300/60 bg-rose-50 text-rose-900",
-              toast.tone === "info" && "border-sky-300/60 bg-sky-50 text-sky-900"
+              toast.tone === "info" && "border-slate-300/60 bg-slate-50 text-slate-900"
             )}
           >
             {toast.tone === "success" ? <CheckCircle2 className="mr-2 inline h-4 w-4" /> : null}
