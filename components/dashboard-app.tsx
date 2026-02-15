@@ -929,7 +929,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
         <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6">
           <header className="sticky top-0 z-30 border-b border-black/10 bg-white px-4 py-3 lg:px-8">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="font-display text-lg font-black tracking-tight text-slate-950">Flext Social OS</h1>
                 <p className="text-xs text-slate-600">{user.username} • {user.role.replace("_", " ")}</p>
@@ -1323,7 +1323,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                     />
                     <p className="mt-2 text-xs text-slate-600">{hashtagsLine}</p>
 
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                       <PublishTargetSwitch value={publishTarget} onChange={setPublishTarget} />
                       <input
                         type="datetime-local"
@@ -1553,25 +1553,34 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 </section>
               ) : (
                 <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-[0_1px_0_rgba(2,6,23,0.06)]">
-                  <div className="mb-3 flex items-center justify-between">
+                  <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <h2 className="text-lg font-semibold">Admin Users</h2>
-                    <button type="button" onClick={() => void loadUsers()} className="text-sm font-semibold" style={{ color: ACCENT }}>Refresh</button>
+                    <button type="button" onClick={() => void loadUsers()} className="text-sm font-semibold" style={{ color: ACCENT }}>
+                      Refresh
+                    </button>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-2 rounded-2xl border border-black/10 bg-white p-3 shadow-sm md:grid-cols-2">
-                    <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
-                    <input value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
-                    <select value={newRole} onChange={(e) => setNewRole(e.target.value as "agency_manager" | "bar_manager")} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm">
+                  <div className="grid grid-cols-1 gap-2 rounded-2xl border border-black/10 bg-white p-3 shadow-sm sm:grid-cols-2">
+                    <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <input value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <select value={newRole} onChange={(e) => setNewRole(e.target.value as "agency_manager" | "bar_manager")} className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm">
                       <option value="agency_manager">Agency manager</option>
                       <option value="bar_manager">Bar manager</option>
                     </select>
-                    <input value={newBrands} onChange={(e) => setNewBrands(e.target.value)} placeholder="Brands (comma separated)" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
-                    <button type="button" onClick={createUser} className="rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95" style={{ background: ACCENT }}>Save User</button>
+                    <input value={newBrands} onChange={(e) => setNewBrands(e.target.value)} placeholder="Brands (comma separated)" className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm" />
+                    <button
+                      type="button"
+                      onClick={createUser}
+                      className="w-full rounded-xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 sm:col-span-2"
+                      style={{ background: ACCENT }}
+                    >
+                      Save User
+                    </button>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between">
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-sm text-slate-600">Filter users</p>
-                    <select value={userFilterRole} onChange={(e) => setUserFilterRole(e.target.value as "all" | "agency_manager" | "bar_manager")} className="rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm shadow-sm">
+                    <select value={userFilterRole} onChange={(e) => setUserFilterRole(e.target.value as "all" | "agency_manager" | "bar_manager")} className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm shadow-sm sm:w-auto">
                       <option value="all">All</option>
                       <option value="agency_manager">Agency manager</option>
                       <option value="bar_manager">Bar manager</option>
@@ -1581,34 +1590,61 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   {isUsersLoading ? (
                     <div className="mt-3 h-12 animate-pulse rounded-2xl bg-slate-100" />
                   ) : (
-                    <div className="mt-3 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
-                      <table className="w-full text-sm">
-                        <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-                          <tr>
-                            <th className="px-3 py-2">Username</th>
-                            <th className="px-3 py-2">Role</th>
-                            <th className="px-3 py-2">Brands</th>
-                            <th className="px-3 py-2">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-black/10">
-                          {filteredUsers.map((managedUser) => (
-                            <tr key={managedUser.username}>
-                              <td className="px-3 py-2">{managedUser.username}</td>
-                              <td className="px-3 py-2">{managedUser.role}</td>
-                              <td className="px-3 py-2">{managedUser.brands.join(", ")}</td>
-                              <td className="px-3 py-2">
-                                {managedUser.username !== user.username ? (
-                                  <button type="button" onClick={() => void deleteManagedUser(managedUser.username)} className="inline-flex items-center gap-1 rounded-xl border border-rose-300/60 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-800 hover:bg-rose-100"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
-                                ) : (
-                                  <span className="text-xs text-slate-500">Current user</span>
-                                )}
-                              </td>
+                    <>
+                      <div className="mt-3 grid gap-2 sm:hidden">
+                        {filteredUsers.map((managedUser) => (
+                          <div key={managedUser.username} className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-black tracking-tight text-slate-950">{managedUser.username}</p>
+                                <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">{managedUser.role}</p>
+                                <p className="mt-2 text-xs text-slate-600">Brands: {managedUser.brands.join(", ")}</p>
+                              </div>
+                              {managedUser.username !== user.username ? (
+                                <button
+                                  type="button"
+                                  onClick={() => void deleteManagedUser(managedUser.username)}
+                                  className="inline-flex items-center gap-1 rounded-xl border border-rose-300/60 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-800 hover:bg-rose-100"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" /> Delete
+                                </button>
+                              ) : (
+                                <span className="text-xs text-slate-500">Current user</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-3 hidden overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm sm:block">
+                        <table className="w-full text-sm">
+                          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+                            <tr>
+                              <th className="px-3 py-2">Username</th>
+                              <th className="px-3 py-2">Role</th>
+                              <th className="px-3 py-2">Brands</th>
+                              <th className="px-3 py-2">Action</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                          </thead>
+                          <tbody className="divide-y divide-black/10">
+                            {filteredUsers.map((managedUser) => (
+                              <tr key={managedUser.username}>
+                                <td className="px-3 py-2">{managedUser.username}</td>
+                                <td className="px-3 py-2">{managedUser.role}</td>
+                                <td className="px-3 py-2">{managedUser.brands.join(", ")}</td>
+                                <td className="px-3 py-2">
+                                  {managedUser.username !== user.username ? (
+                                    <button type="button" onClick={() => void deleteManagedUser(managedUser.username)} className="inline-flex items-center gap-1 rounded-xl border border-rose-300/60 bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-800 hover:bg-rose-100"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
+                                  ) : (
+                                    <span className="text-xs text-slate-500">Current user</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
                   )}
                 </section>
               )
