@@ -24,14 +24,13 @@ export default function MarketingShell({
           <Link href="/" className="flex items-center gap-3">
             <div className="leading-none">
               <div className="font-display text-base font-black tracking-tight text-slate-950">
-                Flext<span className="text-emerald-700">.</span>
+                Flext<span className="text-[#155EEF]">.</span>
               </div>
               <div className="text-[10px] uppercase tracking-[0.34em] text-slate-600">Social OS</div>
             </div>
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            <NavLink href="/features" label="Features" />
             <NavLink href="/security" label="Security" />
             <NavLink href="/pricing" label="Pricing" />
             <a
@@ -48,7 +47,6 @@ export default function MarketingShell({
             </summary>
             <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-lg">
               <div className="p-3 space-y-2">
-                <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/features">Features</Link>
                 <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/security">Security</Link>
                 <Link className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50" href="/pricing">Pricing</Link>
                 <a
@@ -76,7 +74,6 @@ export default function MarketingShell({
           <div className="text-sm">
             <div className="font-semibold text-slate-900">Product</div>
             <div className="mt-3 space-y-2 text-slate-700">
-              <Link href="/features" className="block hover:text-slate-950">Features</Link>
               <Link href="/security" className="block hover:text-slate-950">Security</Link>
               <Link href="/pricing" className="block hover:text-slate-950">Pricing</Link>
             </div>
