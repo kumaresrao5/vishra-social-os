@@ -152,14 +152,14 @@ function StatusBadge({ status }: { status: PublishRecord["status"] }) {
 function PublishTargetSwitch({ value, onChange }: { value: PublishTarget; onChange: (next: PublishTarget) => void }) {
   const options: PublishTarget[] = ["post", "story", "both"];
   return (
-    <div className="inline-flex rounded-lg border border-black/10 bg-white p-1 shadow-sm">
+    <div className="inline-flex w-full rounded-lg border border-black/10 bg-white p-1 shadow-sm sm:w-auto">
       {options.map((option) => (
         <button
           key={option}
           type="button"
           onClick={() => onChange(option)}
           className={cn(
-            "rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition",
+            "flex-1 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition sm:flex-none",
             value === option ? "text-white" : "text-slate-600 hover:bg-slate-50"
           )}
           style={value === option ? { background: ACCENT } : undefined}
@@ -774,7 +774,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
 
   if (!user) {
     return (
-      <main className="grid min-h-screen place-items-center px-6 text-slate-900">
+      <main className="grid min-h-screen place-items-center px-4 text-slate-900">
         <form
           onSubmit={onLoginSubmit}
           className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-6 shadow-[0_1px_0_rgba(2,6,23,0.06)]"
@@ -828,7 +828,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
               onClick={() => setSidebarOpen(false)}
               aria-label="Close navigation"
             />
-            <div className="absolute left-0 top-0 h-full w-80 border-r border-black/10 bg-white p-5 shadow-2xl">
+            <div className="absolute left-0 top-0 h-full w-[min(20rem,100vw)] border-r border-black/10 bg-white p-5 shadow-2xl">
               <FlextLogo />
               <p className="mt-3 text-xs text-slate-600">AI publishing command center</p>
               <nav className="mt-8 space-y-1">
@@ -880,7 +880,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           </div>
         ) : null}
 
-        <aside className="hidden w-72 shrink-0 border-r border-black/10 bg-white p-5 lg:flex lg:flex-col">
+        <aside className="hidden w-full max-w-[18rem] shrink-0 border-r border-black/10 bg-white p-5 lg:flex lg:flex-col">
           <FlextLogo />
           <p className="mt-3 text-xs text-slate-600">AI publishing command center</p>
 
@@ -927,7 +927,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
           </button>
         </aside>
 
-        <main className="flex-1 pb-20 lg:pb-6">
+        <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-6">
           <header className="sticky top-0 z-30 border-b border-black/10 bg-white px-4 py-3 lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -935,21 +935,21 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 <p className="text-xs text-slate-600">{user.username} • {user.role.replace("_", " ")}</p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-2">
                 <div className="hidden items-center gap-2 rounded-2xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm md:flex">
                   <Search className="h-4 w-4 text-slate-500" />
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search records..."
-                    className="w-52 bg-transparent outline-none placeholder:text-slate-400"
+                    className="w-[clamp(10rem,18vw,13rem)] bg-transparent outline-none placeholder:text-slate-400"
                   />
                 </div>
 
                 <select
                   value={chosenBrand || allowedBrands[0] || ""}
                   onChange={(e) => setChosenBrand(e.target.value)}
-                  className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm"
+                  className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm sm:w-auto"
                 >
                   {allowedBrands.map((brand) => (
                     <option key={brand} value={brand}>{brand}</option>
@@ -977,7 +977,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             </div>
           </header>
 
-          <div className="mx-auto w-full max-w-7xl px-4 py-6 lg:px-8">
+          <div className="mx-auto w-full max-w-md px-4 py-6 sm:max-w-2xl lg:max-w-7xl lg:px-8">
             {inlineError ? (
               <div className="mb-5 rounded-2xl border border-rose-300/60 bg-rose-50 px-3 py-2 text-sm text-rose-800 shadow-sm">{inlineError}</div>
             ) : null}
@@ -1037,7 +1037,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                             </div>
                             <StatusBadge status={r.status} />
                           </div>
-                          <div className="mt-3 flex items-center justify-between gap-3">
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs text-slate-600">By {r.created_by}</p>
                             <button
                               type="button"
@@ -1045,7 +1045,8 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                                 e.stopPropagation();
                                 void publishQueuedRecord(r.id);
                               }}
-                              className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-3 py-2 text-xs font-semibold text-white shadow-sm"
+                              className="inline-flex w-full items-center justify-center rounded-2xl px-3 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-95 sm:w-auto"
+                              style={{ background: ACCENT }}
                             >
                               Publish
                             </button>
@@ -1169,7 +1170,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   onDragLeave={() => setIsDragging(false)}
                   onDrop={onDrop}
                   className={cn(
-                    "block cursor-pointer rounded-2xl border-2 border-dashed p-10 text-center transition",
+                    "block cursor-pointer rounded-2xl border-2 border-dashed p-6 text-center transition sm:p-10",
                     isDragging ? "border-blue-300 bg-blue-50" : "border-slate-300 bg-white"
                   )}
                 >
@@ -1199,14 +1200,14 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                       <button
                         type="button"
                         onClick={() => { setLastResult(null); }}
-                        className="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50"
+                        className="inline-flex w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 sm:w-auto"
                       >
                         Create another
                       </button>
                       <button
                         type="button"
                         onClick={() => setSection("history")}
-                        className="inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95"
+                        className="inline-flex w-full items-center justify-center rounded-2xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 sm:w-auto"
                         style={{ background: ACCENT }}
                       >
                         View history <ArrowRight className="ml-2 h-4 w-4" />
@@ -1277,9 +1278,9 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                 <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.15fr_1fr]">
                   <SoftCard className="p-4">
                     {activePreviewUrl ? (
-                      <img src={activePreviewUrl} alt="Preview" className="mx-auto max-h-[520px] rounded-2xl object-contain" />
+                      <img src={activePreviewUrl} alt="Preview" className="mx-auto max-h-[52vh] rounded-2xl object-contain sm:max-h-[520px]" />
                     ) : (
-                      <div className="grid min-h-80 place-items-center rounded-2xl border border-black/10 bg-slate-50 text-slate-500">
+                      <div className="grid min-h-[14rem] place-items-center rounded-2xl border border-black/10 bg-slate-50 text-slate-500 sm:min-h-80">
                         Poster preview
                       </div>
                     )}
@@ -1328,7 +1329,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="datetime-local"
                         value={scheduledFor}
                         onChange={(e) => setScheduledFor(e.target.value)}
-                        className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm shadow-sm"
+                        className="w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm shadow-sm sm:w-auto"
                       />
                     </div>
 
@@ -1337,7 +1338,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={publishNow}
                         disabled={isPublishing || !analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 disabled:opacity-60"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:opacity-95 disabled:opacity-60"
                         style={{ background: ACCENT }}
                       >
                         {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
@@ -1347,7 +1348,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                         type="button"
                         onClick={addToQueue}
                         disabled={!analysis}
-                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60"
                       >
                         <Clock3 className="h-4 w-4" /> Add to Queue
                       </button>
@@ -1388,7 +1389,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                             </div>
                             <StatusBadge status={record.status} />
                           </div>
-                          <div className="mt-3 flex items-center justify-between">
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs text-slate-600">By {record.created_by}</p>
                             <button
                               type="button"
@@ -1396,7 +1397,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                                 e.stopPropagation();
                                 void publishQueuedRecord(record.id);
                               }}
-                              className="inline-flex items-center justify-center rounded-2xl px-3 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-95"
+                              className="inline-flex w-full items-center justify-center rounded-2xl px-3 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-95 sm:w-auto"
                               style={{ background: ACCENT }}
                             >
                               Publish
@@ -1533,7 +1534,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     {recentAssets.map((asset) => (
                       <div key={asset.id} className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
-                        <img src={asset.image_url} alt={asset.brand} className="h-40 w-full object-cover" />
+                        <img src={asset.image_url} alt={asset.brand} className="h-36 w-full object-cover sm:h-40" />
                         <div className="p-2 text-xs text-slate-700">
                           <p className="truncate font-semibold">{asset.brand}</p>
                           <p className="text-slate-500">{humanDate(asset.created_at)}</p>
@@ -1631,7 +1632,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-black/10 bg-white lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-black/10 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden">
         {sideNavItems.slice(0, 6).map((item) => {
           const Icon = item.icon;
           const active = section === item.id;
@@ -1653,7 +1654,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
       {selectedRecord ? (
         <div className="fixed inset-0 z-40">
           <button type="button" className="absolute inset-0 bg-black/20" onClick={() => setSelectedRecord(null)} aria-label="Close" />
-          <div className="absolute right-0 top-0 h-full w-full max-w-lg border-l border-black/10 bg-white p-5 shadow-2xl">
+          <div className="absolute right-0 top-0 h-full w-full max-w-[min(32rem,100vw)] border-l border-black/10 bg-white p-5 shadow-2xl">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Record</p>
@@ -1682,7 +1683,7 @@ export default function DashboardApp({ initialSection = "create" }: { initialSec
             </div>
 
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/10 bg-slate-50">
-              <img src={selectedRecord.image_url} alt={selectedRecord.brand} className="h-64 w-full object-cover" />
+              <img src={selectedRecord.image_url} alt={selectedRecord.brand} className="h-52 w-full object-cover sm:h-64" />
             </div>
 
             <div className="mt-4">
