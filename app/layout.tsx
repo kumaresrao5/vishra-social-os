@@ -7,8 +7,8 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
-  title: "Flext Social OS",
-  description: "AI-assisted social publishing control center for multi-outlet teams.",
+  title: "Quotiva - Invoice and Quote Generator",
+  description: "Template-locked invoice and quotation PDF generator.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
